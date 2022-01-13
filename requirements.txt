@@ -1,4 +1,0 @@
-requests
-Authlib
-pandas
-google-api-python-client

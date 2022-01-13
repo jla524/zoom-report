@@ -3,34 +3,47 @@ import os
 import pandas as pd
 from pandas import DataFrame
 from requests import Response
-from googl import Googl
-from zoom import Zoom
+from common.zoom import Zoom
 
 
 ZOOM_API_KEY = os.environ.get("ZOOM_API_KEY")
 ZOOM_API_SECRET = os.environ.get("ZOOM_API_SECRET")
 ZOOM_MEETING_ID = os.environ.get("ZOOM_MEETING_ID")
+JWT_TOKEN = os.environ.get("ZOOM_JWT_TOKEN")
 SERVICE_ACCOUNT_FILE = '../.secrets/hale-sentry-326602-947b9a3c2e01.json'
-SCOPES = ["https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/drive.file"]
+
 
 if __name__ == "__main__":
     zoom = Zoom(ZOOM_API_KEY, ZOOM_API_SECRET)
+    JWT_TOKEN = JWT_TOKEN.encode("utf-8")
 
+<<<<<<< Updated upstream
     jwt_token: bytes = zoom.generate_jwt_token()
     response: Response = zoom.get_meeting_participants(ZOOM_MEETING_ID, jwt_token)
     list_of_participants: list[dict] = response.json().get("participants")
+=======
+    response = zoom.get_meeting_participants(ZOOM_MEETING_ID, JWT_TOKEN)
+    list_of_participants = response.json().get("participants")
+>>>>>>> Stashed changes
 
     while token := response.json().get("next_page_token"):
-        response = zoom.get_meeting_participants(ZOOM_MEETING_ID, jwt_token, token)
+        response = zoom.get_meeting_participants(ZOOM_MEETING_ID, JWT_TOKEN, token)
         list_of_participants += response.json().get("participants")
 
+<<<<<<< Updated upstream
     df: DataFrame = pd.DataFrame(list_of_participants)
     df.join_time = pd.to_datetime(df.join_time).dt.tz_convert("Australia/Sydney")
     df.leave_time = pd.to_datetime(df.leave_time).dt.tz_convert("Australia/Sydney")
+=======
+    df = pd.DataFrame(list_of_participants)
+    #TODO: set to Vancouver time
+    df['join_time'] = pd.to_datetime(df['join_time']).dt.tz_convert("Australia/Sydney")
+    df['leave_time'] = pd.to_datetime(df['leave_time']).dt.tz_convert("Australia/Sydney")
+>>>>>>> Stashed changes
 
     df.sort_values(["id", "name", "join_time"], inplace=True)
 
-    output_df: DataFrame = df.groupby(["id", "name", "user_email"]) \
+    output_df = df.groupby(["id", "name", "user_email"]) \
         .agg({"duration": ["sum"], "join_time": ["min"], "leave_time": ["max"]}) \
         .reset_index() \
         .rename(columns={"duration": "total_duration"})
@@ -41,6 +54,7 @@ if __name__ == "__main__":
 
     output_df['join_time'] = output_df.join_time.dt.strftime("%Y-%m-%d %H:%M:%S")
     output_df['leave_time'] = output_df.leave_time.dt.strftime("%Y-%m-%d %H:%M:%S")
+<<<<<<< Updated upstream
     output_df.to_csv('../output/test.csv', index=False)
     """
     meeting_date: str = output_df.join_time.tolist()[0].split(" ")[0]
@@ -60,3 +74,10 @@ if __name__ == "__main__":
           f"updatedRows: {result.get('updates').get('updatedRows')}\n"
           f"link: {sheet_link}")
     """
+=======
+
+    print(output_df)
+    meeting_date = output_df.join_time.tolist()[0].split(" ")[0]
+    output_file = f"zoom_report_{meeting_date}"
+    output_df.to_csv('../output/' + output_file, index=False)
+>>>>>>> Stashed changes
