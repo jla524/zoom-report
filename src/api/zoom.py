@@ -3,6 +3,7 @@ from typing import Optional
 import requests
 from authlib.jose import jwt
 from config import Config
+from common.enums import Http
 
 
 class Zoom:
@@ -30,7 +31,7 @@ class Zoom:
         url = f'{self.reports_url}/{self.id}/participants'
         headers = {'Authorization': f'Bearer {Config.zoom_jwt_token()}'}
         response = requests.get(url, headers=headers, params=params)
-        if response.status_code != 200:
+        if response.status_code != Http.OK:
             self._generate_new_token()
             headers = {'Authorization': f'Bearer {Config.zoom_jwt_token()}'}
             response = requests.get(url, headers=headers, params=params)
