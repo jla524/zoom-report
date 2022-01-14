@@ -4,7 +4,7 @@ Package wide configurations
 import sys
 from pathlib import Path
 from threading import Lock
-from dotenv import dotenv_values, find_dotenv
+from dotenv import dotenv_values, find_dotenv, set_key
 
 
 class ThreadSafeMeta(type):
@@ -44,7 +44,8 @@ class Config(metaclass=ThreadSafeMeta):
         __ragic_api_key = __config['RAGIC_API_KEY']
         __zoom_api_key = __config['ZOOM_API_KEY']
         __zoom_api_secret = __config['ZOOM_API_SECRET']
-        __zoom_jwt_token = __config['ZOOM_JWT_TOKEN'] 
+        __zoom_jwt_token_key = 'ZOOM_JWT_TOKEN'
+        __zoom_jwt_token = __config[__zoom_jwt_token_key]
         __jwt_token_expire = 604800
         __jwt_token_algo = 'HS256'
         __logfile_name = f'{__package}-{__version}.log'
@@ -132,7 +133,8 @@ class Config(metaclass=ThreadSafeMeta):
         @description: update the expired token with the new one
         """
         if new_token and isinstance(new_token, str):
-            cls.__token = new_token
+            set_key(find_dotenv(), cls.__zoom_jwt_token_key, new_token)
+            cls.__zoom_jwt_token = new_token
     
     @classmethod
     def jwt_token_expire(cls) -> int:

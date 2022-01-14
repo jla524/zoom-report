@@ -2,35 +2,35 @@ from time import time
 from typing import Optional
 import requests
 from authlib.jose import jwt
-from urllib.parse import urljoin
 from config import Config
 from common.enums import Http
 
 
 class Zoom:
-    _base_url = 'https://api.zoom.us/v2/report/meetings'
+    _base_url = 'https://api.zoom.us/v2/report/meetings/'
 
     def __init__(self, id: str):
-        self.meeting_url = urljoin(self._base_url, id)
+        self.id = id
 
     def _generate_new_token(self):
         time_now = time()
         payload = {
             'aud': None,
             'iat': time_now,
-            'exp': time_now + Config.jwt_token_exp(),
+            'exp': time_now + Config.jwt_token_expire(),
             'iss': Config.zoom_api_key()
         }
         header = {'alg': Config.jwt_token_algo()}
         token = jwt.encode(header, payload, Config.zoom_api_secret())
-        # TODO: update in .env too
-        Config.update_jwt_token(token)
+        Config.update_jwt_token(token.decode('utf-8'))
     
     def _send_request(self, params):
-        url = urljoin(self.meeting_url, 'participants')
+        url = f'{self._base_url}/{self.id}/participants'
         headers = {'Authorization': f'Bearer {Config.zoom_jwt_token()}'}
         response = requests.get(url, headers=headers, params=params)
         if response.status_code != Http.OK:
+            print("The JWT token is invalid or expired.")
+            print("Requesting a new token.")
             self._generate_new_token()
             headers = {'Authorization': f'Bearer {Config.zoom_jwt_token()}'}
             response = requests.get(url, headers=headers, params=params)
