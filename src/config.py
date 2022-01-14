@@ -40,11 +40,13 @@ class Config(metaclass=ThreadSafeMeta):
         __timezone = 'America/Vancouver'
         __config = dotenv_values(find_dotenv())
         __env = __config['APP_ENV']
+        __dropbox_api_key = __config['DROPBOX_API_KEY']
+        __ragic_api_key = __config['RAGIC_API_KEY']
         __zoom_api_key = __config['ZOOM_API_KEY']
         __zoom_api_secret = __config['ZOOM_API_SECRET']
         __zoom_jwt_token = __config['ZOOM_JWT_TOKEN'] 
-        __dropbox_api_key = __config['DROPBOX_API_KEY']
-        __ragic_api_key = __config['RAGIC_API_KEY']
+        __jwt_token_expire = 604800
+        __jwt_token_algo = 'HS256'
         __logfile_name = f'{__package}-{__version}.log'
         __config_dir = Path().home() / '.config' / __package
         __base_dir = Path(__file__).resolve(strict=True).parent.parent
@@ -88,50 +90,63 @@ class Config(metaclass=ThreadSafeMeta):
         @description: getter for config
         """
         return cls.__env
-    
-    @classmethod
-    def zoom_api_key(cls) -> str:
-        """
-        @description: getter for zoom api key
-        """
-        return cls.__zoom_api_key
-    
-    @classmethod
-    def zoom_api_secret(cls) -> str:
-        """
-        @description: getter for zoom api secret
-        """
-        return cls.__zoom_api_secret
-    
-    @classmethod
-    def zoom_jwt_token(cls) -> str:
-        """
-        @description: getter for zoom jwt token
-        """
-        return cls.__zoom_jwt_token
-    
-    @classmethod
-    def update_jwt_token(cls, new_token):
-        """
-        @description: Updated the expired token with the new one
-        """
-        if new_token and isinstance(new_token, str):
-            cls.__token = new_token
 
-    
     @classmethod
     def dropbox_api_key(cls) -> str:
         """
         @description: getter for dropbox api key
         """
         return cls.__dropbox_api_key
-    
+
     @classmethod
     def ragic_api_key(cls) -> str:
         """
         @description: getter for ragic api key
         """
         return cls.__ragic_api_key
+
+    @classmethod
+    def zoom_api_key(cls) -> str:
+        """
+        @description: getter for zoom api key
+        """
+        return cls.__zoom_api_key
+
+    @classmethod
+    def zoom_api_secret(cls) -> str:
+        """
+        @description: getter for zoom api secret
+        """
+        return cls.__zoom_api_secret
+
+    @classmethod
+    def zoom_jwt_token(cls) -> str:
+        """
+        @description: getter for zoom jwt token
+        """
+        return cls.__zoom_jwt_token
+
+    @classmethod
+    def update_jwt_token(cls, new_token) -> None:
+        """
+        @description: update the expired token with the new one
+        """
+        if new_token and isinstance(new_token, str):
+            cls.__token = new_token
+    
+    @classmethod
+    def jwt_token_expire(cls) -> int:
+        """
+        @description: getter for jwt token expiration time (in seconds)
+        """
+        return cls.__jwt_token_expire
+
+    @classmethod
+    def jwt_token_algo(cls) -> str:
+        """
+        @description: getter forjwt token algorithm
+        """
+        return cls.__jwt_token_algo
 
     @classmethod
     def logfile_name(cls) -> str:
@@ -153,14 +168,14 @@ class Config(metaclass=ThreadSafeMeta):
         @description: getter for base directory
         """
         return cls.__base_dir
-    
+
     @classmethod
     def output_dir(cls) -> Path:
         """
         @description: getter for output directory
         """
         return cls.__output_dir
-    
+
     @classmethod
     def dropbox_dir(cls) -> Path:
         """

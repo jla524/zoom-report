@@ -34,11 +34,11 @@ def combine_rejoins(df):
     return output_df
 
 
-def save_attendence(output_df):
-    meeting_date = datetime.today().date()
+def save_attendence(output_df, id):
+    date = datetime.today().date()
     output_dir = Config.output_dir()
     output_dir.mkdir(exist_ok=True)
-    output_file = output_dir / f'zoom_report_{meeting_date}.csv'
+    output_file = output_dir / f'{id}_{date}.csv'
     output_df.to_csv(output_file, index=False)
     return output_file
 
@@ -50,4 +50,4 @@ def fetch(meeting_id):
         return
     data = convert_to_frame(data)
     data = combine_rejoins(data)
-    return save_attendence(data)
+    return save_attendence(data, meeting_id)
