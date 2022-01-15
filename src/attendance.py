@@ -30,7 +30,7 @@ def combine_rejoins(df):
         .reset_index() \
         .rename(columns={"duration": "total_duration"})
     output_df.columns = output_df.columns.get_level_values(0)
-    output_df.total_duration = round(output_df.total_duration / 3600, 2)
+    output_df.total_duration = round(output_df.total_duration / 60, 2)
     return output_df
 
 
