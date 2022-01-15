@@ -52,7 +52,8 @@ class Config(metaclass=ThreadSafeMeta):
         __config_dir = Path().home() / '.config' / __package
         __base_dir = Path(__file__).resolve(strict=True).parent.parent
         __output_dir = __base_dir / 'output'
-        __dropbox_dir = Path('/VS-AV/Zoom Meeting Participants')
+        __dropbox_storage_dir = Path('/VS-AV/Zoom Meeting Participants')
+        __ragic_form_dir = 'lynvolunteer/cogv/19'
     except KeyError as error:
         sys.stderr.write(f"Dotenv config error: {error} is missing\n")
         sys.exit(1)
@@ -179,8 +180,15 @@ class Config(metaclass=ThreadSafeMeta):
         return cls.__output_dir
 
     @classmethod
-    def dropbox_dir(cls) -> Path:
+    def dropbox_storage_dir(cls) -> Path:
         """
-        @description: getter for dropbox directory
+        @description: getter for dropbox storage directory
         """
-        return cls.__dropbox_dir
+        return cls.__dropbox_storage_dir
+
+    @classmethod
+    def ragic_form_dir(cls) -> str:
+        """
+        @description: getter for ragic form directory
+        """
+        return cls.__ragic_form_dir
