@@ -12,7 +12,7 @@ class Zoom:
     def __init__(self, id: str):
         self.id = id
 
-    def _generate_new_token(self):
+    def _renew_jwt_token(self):
         time_now = time()
         payload = {
             'aud': None,
@@ -26,13 +26,14 @@ class Zoom:
     
     def _send_request(self, params):
         url = f'{self._base_url}/{self.id}/participants'
-        headers = {'Authorization': f'Bearer {Config.zoom_jwt_token()}'}
+        token = Config.zoom_jwt_token()
+        headers = {'Authorization': f'Bearer {token}'}
         response = requests.get(url, headers=headers, params=params)
         if response.status_code != Http.OK:
-            print("The JWT token is invalid or expired.")
+            print("The token is invalid or expired.")
             print("Requesting a new token.")
-            self._generate_new_token()
-            headers = {'Authorization': f'Bearer {Config.zoom_jwt_token()}'}
+            self._renew_jwt_token()
+            headers = {'Authorization': f'Bearer {token}'}
             response = requests.get(url, headers=headers, params=params)
         return response
 
