@@ -1,3 +1,4 @@
+from pathlib import Path
 from datetime import datetime
 import pandas as pd
 from api.zoom import Zoom
@@ -23,7 +24,7 @@ def convert_to_frame(info) -> pd.DataFrame:
     return frame
 
 
-def combine_rejoins(frame):
+def combine_rejoins(frame) -> pd.DataFrame:
     frame = frame.groupby(['id', 'name', 'user_email']) \
         .agg({'duration': ['sum'],
               'join_time': ['min'],
@@ -35,7 +36,7 @@ def combine_rejoins(frame):
     return frame
 
 
-def save_report(df, meeting_id):
+def save_report(df, meeting_id) -> Path:
     date = datetime.today().date()
     output_dir = Config.output_dir()
     output_dir.mkdir(exist_ok=True)
@@ -45,7 +46,7 @@ def save_report(df, meeting_id):
     return output_file
 
 
-def fetch(meeting_id):
+def fetch(meeting_id) -> Path:
     attendance = get_attendance(meeting_id)
     if not attendance:
         print("Attendance data is not available")
