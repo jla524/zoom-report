@@ -129,14 +129,14 @@ class Config(metaclass=ThreadSafeMeta):
         return cls.__zoom_jwt_token
 
     @classmethod
-    def update_jwt_token(cls, new_token) -> None:
+    def update_jwt_token(cls, new_token: str) -> None:
         """
         @description: update the expired token with the new one
         """
         if new_token and isinstance(new_token, str):
             set_key(find_dotenv(), cls.__zoom_jwt_token_key, new_token)
             cls.__zoom_jwt_token = new_token
-    
+
     @classmethod
     def jwt_token_expire(cls) -> int:
         """
