@@ -3,20 +3,33 @@ from datetime import datetime
 import pandas as pd
 from api.zoom import Zoom
 from config import Config
+from common.helpers import get_uuids
 from logger.pkg_logger import Logger
 
 
 def get_info(meeting_id) -> dict:
-    zoom = Zoom(meeting_id)
-    response = zoom.get_participants()
+    Logger.info("Retrieving most recent attendance info...")
+    zoom = Zoom()
+    response = zoom.get_participants(meeting_id)
     participants = response.get('participants')
     while token := response.get('next_page_token'):
-        response = zoom.get_participants(next_page_token=token)
+        response = zoom.get_participants(meeting_id, next_page_token=token)
         participants += response.get('participants')
     return participants
 
 
+def get_past_info(meeting_id) -> list[dict]:
+    Logger.info("Retrieving past attendance info...")
+    zoom = Zoom()
+    instances = zoom.get_meeting_instances(meeting_id)
+    uuids = get_uuids(instances)
+    responses = [zoom.get_past_participants(uuid) for uuid in uuids]
+    participants = [response.get('participants') for response in responses]
+    return participants
+
+
 def convert_to_frame(info) -> pd.DataFrame:
+    Logger.info("Converting attendance info to DataFrame...")
     frame = pd.DataFrame(info)
     for column in ['join_time', 'leave_time']:
         frame[column] = pd.to_datetime(frame[column]) \
@@ -26,6 +39,7 @@ def convert_to_frame(info) -> pd.DataFrame:
 
 
 def combine_rejoins(frame) -> pd.DataFrame:
+    Logger.info("Combining rejoins...")
     frame = frame.groupby(['id', 'name', 'user_email']) \
         .agg({'duration': ['sum'],
               'join_time': ['min'],
@@ -38,10 +52,11 @@ def combine_rejoins(frame) -> pd.DataFrame:
 
 
 def save_report(df, meeting_id) -> Path:
+    Logger.info("Saving report as CSV...")
     date = datetime.today().date()
     output_dir = Config.output_dir()
     output_dir.mkdir(exist_ok=True)
     output_file = output_dir / f'{meeting_id}_{date}.csv'
     df.to_csv(output_file, index=False)
-    Logger.info("File writtten to " + str(output_file))
+    Logger.info("Report saved in " + str(output_file))
     return output_file
