@@ -1,4 +1,4 @@
-from urllib.parse import urljoin
+from urllib.parse import urljoin, quote_plus
 import requests
 from config import Config
 from common.enums import Http
@@ -39,6 +39,8 @@ class Zoom:
             params.update({'next_page_token': next_page_token})
         return self._send_request(route, params)
 
-    def get_past_participants(self, meeting_uuid) -> dict:
+    def get_past_participants(self, meeting_uuid: str) -> dict:
+        if meeting_uuid.startswith('/') or '//' in meeting_uuid:
+            meeting_uuid = quote_plus(quote_plus(meeting_uuid))
         route = f'past_meetings/{meeting_uuid}/participants'
         return self._send_request(route)
