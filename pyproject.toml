@@ -8,6 +8,7 @@ authors = ["Jacky Lee <jla524@sfu.ca>"]
 python = "^3.10"
 python-dotenv = "^0.19.2"
 Authlib = "^0.15.5"
+colorlog = "^6.6.0"
 
 [tool.poetry.dev-dependencies]
 requests = "^2.27.1"
