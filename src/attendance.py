@@ -3,6 +3,7 @@ from datetime import datetime
 import pandas as pd
 from api.zoom import Zoom
 from config import Config
+from logger.pkg_logger import Logger
 
 
 def get_attendance(meeting_id) -> dict:
@@ -42,14 +43,14 @@ def save_report(df, meeting_id) -> Path:
     output_dir.mkdir(exist_ok=True)
     output_file = output_dir / f'{meeting_id}_{date}.csv'
     df.to_csv(output_file, index=False)
-    print("File writtten to " + str(output_file))
+    Logger.info("File writtten to " + str(output_file))
     return output_file
 
 
 def fetch(meeting_id) -> Path:
     attendance = get_attendance(meeting_id)
     if not attendance:
-        print("Attendance data is not available")
+        Logger.info("Attendance data is not available.")
         return None
     attendance = convert_to_frame(attendance)
     attendance = combine_rejoins(attendance)

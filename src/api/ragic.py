@@ -1,5 +1,6 @@
 import requests
 from config import Config
+from logger.pkg_logger import Logger
 
 
 class Ragic:
@@ -13,7 +14,7 @@ class Ragic:
 
     def send_data(self, data: dict) -> requests.Response:
         if not self._validate_data(data):
-            print("Data is invalid. Unable to write to Ragic.")
+            Logger.error("Data is invalid. Unable to write to Ragic.")
             return None
         url = f'{self._base_url}/{Config.ragic_form_dir()}'
         api_key = Config.ragic_api_key()

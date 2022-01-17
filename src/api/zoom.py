@@ -3,6 +3,7 @@ import requests
 from config import Config
 from common.enums import Http
 from api.jwt import renew_jwt_token
+from logger.pkg_logger import Logger
 
 
 class Zoom:
@@ -16,8 +17,8 @@ class Zoom:
         headers = {'Authorization': f'Bearer {token}'}
         response = requests.get(url, headers=headers, params=params)
         if response.status_code != Http.OK:
-            print("The token is invalid or expired.")
-            print("Requesting a new token.")
+            Logger.info("The token is invalid or expired.")
+            Logger.info("Requesting a new token.")
             new_token = renew_jwt_token()
             headers = {'Authorization': f'Bearer {new_token}'}
             response = requests.get(url, headers=headers, params=params)
