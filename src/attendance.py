@@ -6,7 +6,7 @@ from config import Config
 from logger.pkg_logger import Logger
 
 
-def get_attendance(meeting_id) -> dict:
+def get_info(meeting_id) -> dict:
     zoom = Zoom(meeting_id)
     response = zoom.get_participants()
     participants = response.get('participants')
@@ -45,13 +45,3 @@ def save_report(df, meeting_id) -> Path:
     df.to_csv(output_file, index=False)
     Logger.info("File writtten to " + str(output_file))
     return output_file
-
-
-def fetch(meeting_id) -> Path:
-    attendance = get_attendance(meeting_id)
-    if not attendance:
-        Logger.info("Attendance data is not available.")
-        return None
-    attendance = convert_to_frame(attendance)
-    attendance = combine_rejoins(attendance)
-    return save_report(attendance, meeting_id)
