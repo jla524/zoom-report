@@ -1,4 +1,5 @@
 from time import time
+from authlib.jose import jwt
 from config import Config
 
 
