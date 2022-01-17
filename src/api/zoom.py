@@ -11,8 +11,10 @@ class Zoom:
 
     def __init__(self, meeting_id: str):
         self._meeting_id = meeting_id
+        self._meeting_uuid = ''
 
-    def _send_request(self, url, params=None) -> requests.Response:
+    def _send_request(self, route, params=None) -> requests.Response:
+        url = urljoin(self._base_url, route)
         token = Config.zoom_jwt_token()
         headers = {'Authorization': f'Bearer {token}'}
         response = requests.get(url, headers=headers, params=params)
@@ -26,13 +28,19 @@ class Zoom:
 
     def get_meeting_details(self) -> dict:
         route = f'meetings/{self._meeting_id}'
-        url = urljoin(self._base_url, route)
-        return self._send_request(url).json()
+        return self._send_request(route).json()
 
     def get_participants(self, next_page_token=None) -> dict:
         route = f'report/meetings/{self._meeting_id}/participants'
-        url = urljoin(self._base_url, route)
         params = {'page_size': 300}
         if next_page_token:
             params.update({'next_page_token': next_page_token})
-        return self._send_request(url, params).json()
+        return self._send_request(route, params).json()
+
+    def get_past_meeetings(self) -> dict:
+        route = f'past_meetings/{self._meeting_id}/instance'
+        return self._send_request(route).json()
+
+    def get_past_participants(self) -> dict:
+        route = f'past_meetings/{self._meeting_uuid}/participants'
+        return self._send_request(route).json()
