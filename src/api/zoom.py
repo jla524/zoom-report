@@ -22,28 +22,20 @@ class Zoom:
             response = requests.get(url, headers=headers, params=params)
         return response.json()
 
-    def get_meeting_instances(self, meeting_id):
-        Logger.info("Retrieving meeting instances...")
-        route = f'past_meetings/{meeting_id}/instances'
-        return self._send_request(route)
-
     def get_meeting_details(self, meeting_id):
         Logger.info("Retrieving meeting details...")
         route = f'meetings/{meeting_id}'
         return self._send_request(route)
 
-    def get_participants(self, meeting_id, next_page_token=None):
+    def get_meeting_instances(self, meeting_id):
+        Logger.info("Retrieving meeting instances...")
+        route = f'past_meetings/{meeting_id}/instances'
+        return self._send_request(route)
+
+    def get_participants(self, meeting_uuid, next_page_token=None):
         Logger.info("Retrieving meeting participants...")
-        route = f'report/meetings/{meeting_id}/participants'
+        route = f'report/meetings/{meeting_uuid}/participants'
         params = {'page_size': 300}
         if next_page_token:
             params.update({'next_page_token': next_page_token})
-        return self._send_request(route, params)
-
-    def get_past_participants(self, meeting_uuid):
-        Logger.info("Retrieving past meeting participants...")
-        if meeting_uuid.startswith('/') or '//' in meeting_uuid:
-            meeting_uuid = quote_plus(quote_plus(meeting_uuid))
-        route = f'past_meetings/{meeting_uuid}/participants'
-        params = {'page_size': 300}
         return self._send_request(route, params)
