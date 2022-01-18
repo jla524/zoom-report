@@ -7,25 +7,21 @@ from common.helpers import get_uuids
 from logger.pkg_logger import Logger
 
 
-def get_info(meeting_id) -> dict:
-    Logger.info("Retrieving most recent attendance info...")
-    zoom = Zoom()
-    response = zoom.get_participants(meeting_id)
-    participants = response.get('participants')
-    while token := response.get('next_page_token'):
-        response = zoom.get_participants(meeting_id, next_page_token=token)
-        participants += response.get('participants')
-    return participants
-
-
-def get_past_info(meeting_id) -> list[dict]:
-    Logger.info("Retrieving past attendance info...")
+def get_info(meeting_id) -> list[dict]:
+    Logger.info("Retrieving attendance info...")
     zoom = Zoom()
     instances = zoom.get_meeting_instances(meeting_id)
-    uuids = get_uuids(instances)
-    responses = [zoom.get_past_participants(uuid) for uuid in uuids]
-    participants = [response.get('participants') for response in responses]
-    return participants
+    # TODO: Add creation time
+    # TODO: Slow down to to avoid reaching API limit
+    responses = [zoom.get_participants(uuid) for uuid in get_uuids(instances)]
+    participants_list = []
+    for response in responses:
+        participants = response.get('participants')
+        while token := response.get('next_page_token'):
+            response = zoom.get_participants(meeting_id, next_page_token=token)
+            participants += response.get('participants')
+        participants_list.append(participants)
+    return participants_list
 
 
 def convert_to_frame(info) -> pd.DataFrame:
