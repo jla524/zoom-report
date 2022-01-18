@@ -2,7 +2,7 @@
 Set up a thread safe singleton meta class
 Adapted from https://github.com/mattcoding4days/kickstart/blob/main/kickstart/logger/__init__.py
 """
-from config import Config
+from zoom_report import Config
 
 LOGGING_CONFIG = {
     "version": 1,

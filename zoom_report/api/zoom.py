@@ -1,9 +1,9 @@
 from urllib.parse import urljoin
 import requests
-from config import Config
-from common.enums import Http
-from api.jwt import renew_jwt_token
-from logger.pkg_logger import Logger
+from zoom_report import Config
+from zoom_report.common.enums import Http
+from zoom_report.api.jwt import renew_jwt_token
+from zoom_report.logger.pkg_logger import Logger
 
 
 class Zoom:

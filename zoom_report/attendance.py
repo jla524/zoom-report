@@ -1,7 +1,7 @@
 import pandas as pd
-from api.zoom import Zoom
-from config import Config
-from logger.pkg_logger import Logger
+from zoom_report import Config
+from zoom_report.api.zoom import Zoom
+from zoom_report.logger.pkg_logger import Logger
 
 
 def get_info(uuid) -> list[dict]:
@@ -15,7 +15,7 @@ def get_info(uuid) -> list[dict]:
     return participants
 
 
-def convert_to_frame(info) -> pd.DataFrame:
+def to_frame(info) -> pd.DataFrame:
     Logger.info("Converting attendance info to DataFrame...")
     frame = pd.DataFrame(info)
     for column in ['join_time', 'leave_time']:
@@ -28,9 +28,7 @@ def convert_to_frame(info) -> pd.DataFrame:
 def combine_rejoins(frame) -> pd.DataFrame:
     Logger.info("Combining rejoins...")
     frame = frame.groupby(['id', 'name', 'user_email']) \
-        .agg({'duration': ['sum'],
-              'join_time': ['min'],
-              'leave_time': ['max']}) \
+        .agg({'duration': 'sum', 'join_time': 'min', 'leave_time': 'max'}) \
         .reset_index() \
         .rename(columns={"duration": "total_duration"})
     frame.columns = frame.columns.get_level_values(0)

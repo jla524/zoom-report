@@ -1,6 +1,6 @@
 from time import time
 from authlib.jose import jwt
-from config import Config
+from zoom_report import Config
 
 
 def renew_jwt_token() -> str:

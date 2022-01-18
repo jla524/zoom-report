@@ -1,5 +1,6 @@
 import requests
 from config import Config
+from common.enums import Cogv
 from logger.pkg_logger import Logger
 
 
@@ -8,7 +9,7 @@ class Ragic:
 
     def _validate_data(self, data: dict) -> bool:
         for key, value in data.items():
-            if not (isinstance(key, str) and isinstance(value, str)):
+            if not (Cogv.has_value(key) and isinstance(value, str)):
                 return False
         return True
 

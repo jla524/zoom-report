@@ -1,8 +1,8 @@
 from pathlib import Path
 from datetime import datetime
-from config import Config
-from api.dropbox import TransferData
-from logger.pkg_logger import Logger
+from zoom_report import Config
+from zoom_report.api.dropbox import TransferData
+from zoom_report.logger.pkg_logger import Logger
 
 
 def save_report(report, meeting_uuid) -> Path:

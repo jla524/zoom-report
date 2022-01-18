@@ -6,11 +6,9 @@ import logging
 from logging.config import dictConfig
 from pathlib import Path
 import sys
-
 from colorama import Back, Fore, init
-
-from config import ThreadSafeMeta, Config
-from logger import LOGGING_CONFIG
+from zoom_report import ThreadSafeMeta, Config
+from zoom_report.logger import LOGGING_CONFIG
 
 
 init(autoreset=True)
