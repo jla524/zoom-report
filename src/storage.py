@@ -1,7 +1,20 @@
 from pathlib import Path
+from datetime import datetime
 from config import Config
 from api.dropbox import TransferData
 from logger.pkg_logger import Logger
+
+
+def save_report(report, meeting_uuid) -> Path:
+    Logger.info("Saving report as CSV...")
+    output_dir = Config.output_dir()
+    output_dir.mkdir(exist_ok=True)
+    date = datetime.today().date()
+    file_name = f'{meeting_uuid}_{date}.csv'.replace('/', '%f')
+    output_file = output_dir / file_name
+    report.to_csv(output_file, index=False)
+    Logger.info("Report saved in " + str(output_file))
+    return output_file
 
 
 def upload_file(source_file: Path) -> None:
