@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
 import sys
 from pathlib import Path
-from storage import upload_file
-from attendance import get_info, convert_to_frame, combine_rejoins, save_report
-from meetings import get_instances, get_uuids
+from api.zoom import Zoom
+from attendance import get_info, convert_to_frame, combine_rejoins
+from storage import upload_file, save_report
+from common.helpers import get_uuids, encode_uuid
 from logger.pkg_logger import Logger
 
 
-def fetch_meeting_attendance(_id) -> Path:
-    info = get_info(_id)
-    if not info:
-        Logger.info("Attendance data is not available.")
-        return None
-    info = convert_to_frame(info)
-    info = combine_rejoins(info)
-    return save_report(info, _id)
+def fetch_meeting_attendance(uuids) -> Path:
+    paths = []
+    for uuid in uuids:
+        info = get_info(encode_uuid(uuid))
+        if not info:
+            Logger.info(f"Unable to retrieve {uuid}")
+            continue
+        info = convert_to_frame(info)
+        info = combine_rejoins(info)
+        paths.append(save_report(info, uuid))
+    return paths
 
 
 if __name__ == "__main__":
@@ -22,8 +26,6 @@ if __name__ == "__main__":
         Logger.error("Please enter a meeting id")
         sys.exit(1)
     meeting_id = sys.argv[1]
-    file_path = fetch_meeting_attendance(meeting_id)
-    instances = get_instances(meeting_id)
-    uuids = get_uuids(instances)
-    Logger.info(uuids)
-    upload_file(file_path)
+    instances = Zoom().get_meeting_instances(meeting_id)
+    meeting_uuids = get_uuids(instances)
+    file_paths = fetch_meeting_attendance(meeting_uuids)
