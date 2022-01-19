@@ -1,5 +1,4 @@
 import pandas as pd
-from zoom_report import Config
 from zoom_report.api.zoom import Zoom
 from zoom_report.logger.pkg_logger import Logger
 
@@ -15,12 +14,12 @@ def get_info(uuid) -> list[dict]:
     return participants
 
 
-def to_frame(info) -> pd.DataFrame:
+def to_frame(info, timezone) -> pd.DataFrame:
     Logger.info("Converting attendance info to DataFrame...")
     frame = pd.DataFrame(info)
     for column in ['join_time', 'leave_time']:
         frame[column] = pd.to_datetime(frame[column]) \
-            .dt.tz_convert(Config.timezone())
+            .dt.tz_convert(timezone)
     frame.sort_values(['id', 'name', 'join_time'], inplace=True)
     return frame
 
@@ -30,7 +29,7 @@ def combine_rejoins(frame) -> pd.DataFrame:
     frame = frame.groupby(['id', 'name', 'user_email']) \
         .agg({'duration': 'sum', 'join_time': 'min', 'leave_time': 'max'}) \
         .reset_index() \
-        .rename(columns={"duration": "total_duration"})
+        .rename(columns={'duration': 'total_duration'})
     frame.columns = frame.columns.get_level_values(0)
     frame.total_duration = round(frame.total_duration / 60, 2)
     return frame

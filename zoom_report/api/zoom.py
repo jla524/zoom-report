@@ -24,14 +24,14 @@ class Zoom:
             Logger.info("An error has occured when sending request.")
         return response
 
-    def get_meeting_details(self, meeting_id):
-        Logger.info("Retrieving meeting details...")
-        route = f'meetings/{meeting_id}'
-        return self._send_request(route).json()
-
     def get_meeting_instances(self, meeting_id):
         Logger.info("Retrieving meeting instances...")
         route = f'past_meetings/{meeting_id}/instances'
+        return self._send_request(route).json()
+
+    def get_meeting_details(self, meeting_id):
+        Logger.info("Retrieving meeting details...")
+        route = f'meetings/{meeting_id}'
         return self._send_request(route).json()
 
     def get_participants(self, meeting_uuid, next_page_token=None):

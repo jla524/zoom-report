@@ -1,6 +1,3 @@
-from enum import Enum
-
-
 class Http():
     OK = 200
     CREATED = 201
@@ -9,13 +6,14 @@ class Http():
     NOT_FOUND = 404
 
 
-class Cogv(Enum):
+class Cogv():
     MEETING_NUMBER = 1009850
     TOPIC = 1009851
     USER_NAME = 1009863
     USER_EMAIL = 1009864
     DURATION = 1009865
     MEETING_ID = 1009871
+    START_TIME = 1009866
     END_TIME = 1009867
     PART = 1009868
     NO = 1009852
@@ -24,7 +22,3 @@ class Cogv(Enum):
     TOTAL_DURATION = 1009855
     JOIN_TIME = 1009856
     LEAVE_TIME = 1009857
-
-    @classmethod
-    def has_value(cls, value):
-        return value in cls._value2member_map_
