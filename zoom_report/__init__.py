@@ -37,6 +37,7 @@ class Config(metaclass=ThreadSafeMeta):
         __package = 'zoom_report'
         __version = '0.1.0'
         __default_env = 'dev'
+        __logfile_name = f'{__package}-{__version}.log'
         __config = dotenv_values(find_dotenv())
         __env = __config['APP_ENV']
         __dropbox_api_key = __config['DROPBOX_API_KEY']
@@ -47,7 +48,7 @@ class Config(metaclass=ThreadSafeMeta):
         __zoom_jwt_token = __config[__zoom_jwt_token_key]
         __jwt_token_expire = 604800
         __jwt_token_algo = 'HS256'
-        __logfile_name = f'{__package}-{__version}.log'
+        __datetime_format = '%Y-%m-%d %H:%M:%S'
         __config_dir = Path().home() / '.config' / __package
         __base_dir = Path(__file__).resolve(strict=True).parent.parent
         __output_dir = __base_dir / 'output'
@@ -77,6 +78,13 @@ class Config(metaclass=ThreadSafeMeta):
         @description: getter for the default env
         """
         return cls.__default_env
+
+    @classmethod
+    def logfile_name(cls) -> str:
+        """
+        @description: getter for the logging file name
+        """
+        return cls.__logfile_name
 
     @classmethod
     def env(cls) -> str:
@@ -139,16 +147,16 @@ class Config(metaclass=ThreadSafeMeta):
     @classmethod
     def jwt_token_algo(cls) -> str:
         """
-        @description: getter forjwt token algorithm
+        @description: getter for jwt token algorithm
         """
         return cls.__jwt_token_algo
 
     @classmethod
-    def logfile_name(cls) -> str:
+    def datetime_format(cls) -> str:
         """
-        @description: getter for the logging file name
+        @description; getter for datetime format
         """
-        return cls.__logfile_name
+        return cls.__datetime_format
 
     @classmethod
     def config_dir(cls) -> Path:

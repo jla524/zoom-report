@@ -1,4 +1,5 @@
 import pandas as pd
+from zoom_report import Config
 from zoom_report.api.zoom import Zoom
 from zoom_report.logger.pkg_logger import Logger
 
@@ -19,7 +20,9 @@ def to_frame(info, timezone) -> pd.DataFrame:
     frame = pd.DataFrame(info)
     for column in ['join_time', 'leave_time']:
         frame[column] = pd.to_datetime(frame[column]) \
-            .dt.tz_convert(timezone)
+            .dt.tz_convert(timezone) \
+            .dt.strftime(Config.datetime_format())
+    frame['user_email'] = frame['user_email'].fillna('')
     frame.sort_values(['id', 'name', 'join_time'], inplace=True)
     return frame
 
