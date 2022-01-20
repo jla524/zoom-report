@@ -2,20 +2,19 @@ from pathlib import Path
 from datetime import datetime
 import pandas as pd
 from zoom_report import Config
-from zoom_report.common.enums import Cogv
 from zoom_report.api.ragic import Ragic
 from zoom_report.api.dropbox import TransferData
 from zoom_report.logger.pkg_logger import Logger
 
 
-def save_report(report, meeting_topic: str, meeting_uuid: str) -> Path:
+def save_report(report, topic: str, date: str, uuid: str) -> Path:
     Logger.info("Saving report as CSV...")
     output_dir = Config.output_dir()
     output_dir.mkdir(exist_ok=True)
     date = datetime.today().date()
-    meeting_topic = meeting_topic.replace(' ', '-')
-    meeting_uuid = meeting_uuid.replace('/', '-')
-    file_name = f'{meeting_topic}_{date}_{meeting_uuid}.csv'
+    topic = topic.replace(' ', '-')
+    uuid = uuid.replace('/', '-')
+    file_name = f'{topic}_{date}_{uuid}.csv'
     output_file = output_dir / file_name
     report.to_csv(output_file, index=False)
     Logger.info("Report saved in " + str(output_file))
