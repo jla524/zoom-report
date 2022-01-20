@@ -121,7 +121,7 @@ optional = false
 python-versions = ">=3.7.1"
 
 [package.dependencies]
-numpy = {version = ">=1.21.0", markers = "python_version >= \"3.10\""}
+numpy = {version = ">=1.21.0", markers = "python_version >= \"3.9\""}
 python-dateutil = ">=2.7.3"
 pytz = ">=2017.3"
 
