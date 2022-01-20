@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 from pathlib import Path
+from zoom_report.command_line import Cli
 from zoom_report.api.zoom import Zoom
 from zoom_report.common.helpers import get_meeting_info, encode_uuid, localize
 from zoom_report.attendance import get_info, to_frame, combine_rejoins
@@ -25,9 +26,10 @@ def fetch_all_attendance(basic_info, details) -> Path:
         write_records(path, additional_info)
 
 
-def run():
-    meeting_id = sys.argv[1]
-    instances = Zoom().get_meeting_instances(meeting_id)
-    meeting_details = Zoom().get_meeting_details(meeting_id)
-    meeting_info = get_meeting_info(instances)
-    fetch_all_attendance(meeting_info, meeting_details)
+def run() -> None:
+    cli = Cli()
+    if cli.args.all:
+        instances = Zoom().get_meeting_instances(cli.args.meeting_id)
+        meeting_details = Zoom().get_meeting_details(cli.args.meeting_id)
+        meeting_info = get_meeting_info(instances)
+        fetch_all_attendance(meeting_info, meeting_details)
