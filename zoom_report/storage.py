@@ -11,7 +11,7 @@ def save_report(report, topic: str, date: str, uuid: str) -> Path:
     Logger.info("Saving report as CSV...")
     output_dir = Config.output_dir()
     output_dir.mkdir(exist_ok=True)
-    date = datetime.today().date()
+    date = date.split(' ')[0]
     topic = topic.replace(' ', '-')
     uuid = uuid.replace('/', '-')
     file_name = f'{topic}_{date}_{uuid}.csv'

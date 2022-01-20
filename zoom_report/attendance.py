@@ -1,6 +1,6 @@
 import pandas as pd
 from zoom_report import Config
-from zoom_report.api.helpers import encode_uuid
+from zoom_report.common.helpers import encode_uuid
 from zoom_report.api.zoom import Zoom
 from zoom_report.logger.pkg_logger import Logger
 
