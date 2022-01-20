@@ -53,7 +53,8 @@ class Config(metaclass=ThreadSafeMeta):
         __base_dir = Path(__file__).resolve(strict=True).parent.parent
         __output_dir = __base_dir / 'output'
         __dropbox_storage_dir = Path('/VS-AV/Zoom Meeting Participants')
-        __ragic_form_dir = 'lynvolunteer/cogv/18'
+        __ragic_attendance_route = 'lynvolunteer/cogv/18'
+        __ragic_participants_route = 'lynvolunteer/cogv/19'
     except KeyError as error:
         sys.stderr.write(f"Dotenv config error: {error} is missing\n")
         sys.exit(1)
@@ -187,8 +188,15 @@ class Config(metaclass=ThreadSafeMeta):
         return cls.__dropbox_storage_dir
 
     @classmethod
-    def ragic_form_dir(cls) -> str:
+    def ragic_attendance_route(cls) -> str:
         """
-        @description: getter for ragic form directory
+        @description: getter for ragic attendance route
         """
-        return cls.__ragic_form_dir
+        return cls.__ragic_attendance_route
+
+    @classmethod
+    def ragic_participants_route(cls) -> str:
+        """
+        @description: getter for ragic participants route
+        """
+        return cls.__ragic_participants_route

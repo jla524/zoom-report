@@ -1,5 +1,5 @@
-import dropbox
 from pathlib import Path
+from dropbox import Dropbox, files
 
 
 class TransferData:
@@ -8,6 +8,7 @@ class TransferData:
 
     def upload_file(self, file_from: Path, file_to: Path):
         """upload a file to Dropbox using API v2"""
-        dbx = dropbox.Dropbox(self.access_token)
+        dbx = Dropbox(self.access_token)
+        mode = files.WriteMode.overwrite
         with file_from.open('rb') as file:
-            dbx.files_upload(file.read(), str(file_to))
+            dbx.files_upload(file.read(), str(file_to), mode=mode)
