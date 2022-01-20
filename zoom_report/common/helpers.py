@@ -1,5 +1,5 @@
 from datetime import datetime
-from urllib.parse import urljoin, quote_plus
+from urllib.parse import quote_plus
 from zoom_report import Config
 from zoom_report.api.zoom import Zoom
 from zoom_report.logger.pkg_logger import Logger
@@ -11,8 +11,8 @@ def get_meeting_info(instances: list[dict]) -> list[list[str]]:
         Logger.error("Unable to retrieve meeting info")
         return None
     meetings = instances['meetings']
-    uuids = [[meeting['uuid'], meeting['start_time']] for meeting in meetings]
-    return uuids
+    info = [(meeting['uuid'], meeting['start_time']) for meeting in meetings]
+    return sorted(info, key=lambda x: x[1])
 
 
 def encode_uuid(uuid: str) -> str:
