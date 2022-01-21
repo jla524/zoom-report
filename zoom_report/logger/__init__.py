@@ -1,6 +1,6 @@
 """
 Set up a thread safe singleton meta class
-Adapted from https://github.com/mattcoding4days/kickstart/blob/main/kickstart/logger/__init__.py
+Adapted from https://github.com/mattcoding4days/kickstart
 """
 from zoom_report import Config
 
@@ -10,11 +10,13 @@ LOGGING_CONFIG = {
     "formatters": {
         "colored": {
             "()": "colorlog.ColoredFormatter",
-            "format": "%(log_color)s%(levelname)-8s%(reset)s %(blue)s%(message)s",
+            "format": ("%(log_color)s%(levelname)-8s%(reset)s "
+                       "%(blue)s%(message)s"),
         },
         "simple": {"format": "%(levelname)s - %(message)s"},
         "pedantic": {
-            "format": "%(asctime)s - %(module)s - %(funcName)s - %(name)s - %(lineno)d - %(levelname)s - %(message)s"
+            "format": ("%(asctime)s - %(module)s - %(funcName)s - %(name)s - "
+                       "%(lineno)d - %(levelname)s - %(message)s")
         },
     },
     "handlers": {

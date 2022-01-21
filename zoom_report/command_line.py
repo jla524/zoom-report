@@ -9,7 +9,7 @@ class Cli(metaclass=ThreadSafeMeta):
             usage='%(prog)s [options]',
             description="A Zoom attendance automation system."
         )
-        self.__parser.add_argument( '-a', '--all', action='store_true')
-        self.__parser.add_argument( '-n', '--new', action='store_true')
+        self.__parser.add_argument('-a', '--all', action='store_true')
+        self.__parser.add_argument('-n', '--new', action='store_true')
         self.__parser.add_argument('meeting_id', type=int)
         self.args = self.__parser.parse_args()

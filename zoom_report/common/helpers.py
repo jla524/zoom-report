@@ -21,6 +21,7 @@ def encode_uuid(uuid: str) -> str:
         uuid = quote_plus(quote_plus(uuid))
     return uuid
 
+
 def localize(timestamp: str) -> str:
     timestamp = timestamp.replace('Z', '+00:00')
     timestamp = datetime.fromisoformat(timestamp)

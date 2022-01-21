@@ -1,6 +1,6 @@
 """
 Customized system wide logger
-Adapted from https://github.com/mattcoding4days/kickstart/blob/main/kickstart/logger/pkg_logger.py
+Adapted from https://github.com/mattcoding4days/kickstart
 """
 import logging
 from logging.config import dictConfig
@@ -40,11 +40,13 @@ class LoggerLoader(metaclass=ThreadSafeMeta):
             dictConfig(LOGGING_CONFIG)
         except ValueError as error:
             sys.stderr.write(
-                f"{Fore.RED}Loading default logging config failed, syntax error\n\n{error}")
+                f"{Fore.RED}Loading default logging config failed, "
+                f"syntax error\n\n{error}")
             sys.exit(1)
         except KeyError as error:
             sys.stderr.write(
-                f"{Fore.RED}Loading logging config failed, syntax error\n\n{error}")
+                f"{Fore.RED}Loading logging config failed, "
+                f"syntax error\n\n{error}")
             sys.exit(1)
 
     @staticmethod
@@ -68,8 +70,10 @@ class LoggerLoader(metaclass=ThreadSafeMeta):
             # name passed is not a valid listed logger,
             # return dev as default logger
             sys.stderr.write(
-                f"\n{Back.BLACK}{Fore.RED}{Config.env()}: IS NOT A VALID LOGGER\n"
-                f"{Back.BLACK}{Fore.YELLOW}FALLING BACK TO {Config.default_env()}\n")
+                f"\n{Back.BLACK}{Fore.RED}{Config.env()}: "
+                "IS NOT A VALID LOGGER\n"
+                f"{Back.BLACK}{Fore.YELLOW}"
+                "FALLING BACK TO {Config.default_env()}\n")
             logger = logging.getLogger(Config.default_env())
             return logger
 

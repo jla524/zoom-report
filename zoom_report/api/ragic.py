@@ -3,6 +3,7 @@ from zoom_report import Config
 from zoom_report.common.enums import Http, Cogv
 from zoom_report.logger.pkg_logger import Logger
 
+
 class Ragic:
     _base_url = 'https://na3.ragic.com'
 
@@ -22,9 +23,7 @@ class Ragic:
         url = f'{self._base_url}/{api_route}'
         api_key = Config.ragic_api_key()
         headers = {'Authorization': f'Basic {api_key}'}
-        Logger.debug(data)
         response = requests.post(url, data=data, headers=headers)
-        Logger.debug(response.text)
         if response.status_code == Http.OK:
             Logger.info(f"Data sent to {url}.")
         return response
