@@ -1,7 +1,7 @@
-import pandas as pd
+from pandas import DataFrame, to_datetime
 from zoom_report import Config
-from zoom_report.common.helpers import encode_uuid
 from zoom_report.api.zoom import Zoom
+from zoom_report.common.helpers import encode_uuid
 from zoom_report.logger.pkg_logger import Logger
 
 
@@ -16,11 +16,11 @@ def get_info(uuid: str) -> list[dict]:
     return participants
 
 
-def to_frame(info: dict, timezone: str) -> pd.DataFrame:
+def to_frame(info: dict, timezone: str) -> DataFrame:
     Logger.info("Converting attendance info to DataFrame...")
-    frame = pd.DataFrame(info)
+    frame = DataFrame(info)
     for column in ['join_time', 'leave_time']:
-        frame[column] = pd.to_datetime(frame[column]) \
+        frame[column] = to_datetime(frame[column]) \
             .dt.tz_convert(timezone) \
             .dt.strftime(Config.datetime_format())
     frame['user_email'] = frame['user_email'].fillna('')
@@ -28,7 +28,7 @@ def to_frame(info: dict, timezone: str) -> pd.DataFrame:
     return frame
 
 
-def combine_rejoins(frame: pd.DataFrame) -> pd.DataFrame:
+def combine_rejoins(frame: DataFrame) -> DataFrame:
     Logger.info("Combining rejoins...")
     frame = frame.groupby(['id', 'name', 'user_email']) \
         .agg({'duration': 'sum', 'join_time': 'min', 'leave_time': 'max'}) \
@@ -39,10 +39,10 @@ def combine_rejoins(frame: pd.DataFrame) -> pd.DataFrame:
     return frame
 
 
-def get_report(uuid: str, timezone: str) -> pd.DataFrame:
+def get_report(uuid: str, timezone: str) -> DataFrame:
     attendance = get_info(encode_uuid(uuid))
-    if attendance is None:
+    if not attendance:
         Logger.info(f"Unable to retrieve {uuid}")
-        return pd.DataFrame()
+        return DataFrame()
     attendance = to_frame(attendance, timezone)
     return combine_rejoins(attendance)
