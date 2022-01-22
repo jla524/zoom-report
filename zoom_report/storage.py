@@ -6,16 +6,16 @@ from zoom_report.api.dropbox import TransferData
 from zoom_report.logger.pkg_logger import Logger
 
 
-def write_csv(report, topic: str, date: str, uuid: str) -> Path:
+def write_csv(data: DataFrame, topic: str, timestamp: str, uuid: str) -> Path:
     Logger.info("Saving report as CSV...")
     output_dir = Config.output_dir()
     output_dir.mkdir(exist_ok=True)
-    date = date.split(' ')[0]
-    topic = topic.replace(' ', '-')
+    date = timestamp.split(' ')[0]
+    topic = topic.replace(' ', '-').replace('/', '-')
     uuid = uuid.replace('/', '-')
     file_name = f'{topic}_{date}_{uuid}.csv'
     output_file = output_dir / file_name
-    report.to_csv(output_file, index=False)
+    data.to_csv(output_file, index=False)
     Logger.info("Report saved in " + str(output_file))
     return output_file
 
