@@ -27,12 +27,12 @@ def filter_instances(instances: list[tuple], days: int = 3) -> list[tuple]:
     return instances
 
 
-def process_reports(meeting_id: str, new: bool) -> None:
+def process_reports(meeting_id: str, recent: bool) -> None:
     instances = Zoom().get_meeting_instances(meeting_id)
     instances = localize_instances(instances)
     details = Zoom().get_meeting_details(meeting_id)
     if instances and details and 'code' not in details:
-        if new:
+        if recent:
             instances = filter_instances(instances)
         for instance in instances:
             report = get_report(instance[0])
@@ -42,9 +42,9 @@ def process_reports(meeting_id: str, new: bool) -> None:
 
 def run() -> None:
     cli = Cli()
+    if cli.args.meeting is not None:
+        process_reports(cli.args.meeting, cli.args.recent)
     if cli.args.all:
         with Config.meeting_id_file().open('r') as file:
             for meeting_id in file.read().splitlines():
-                process_reports(meeting_id, cli.args.new)
-    if cli.args.meeting is not None:
-        process_reports(cli.args.meeting, cli.args.new)
+                process_reports(meeting_id, cli.args.recent)
