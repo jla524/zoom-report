@@ -2,8 +2,8 @@ from zoom_report import Config
 from zoom_report.command_line import Cli
 from zoom_report.api.zoom import Zoom
 from zoom_report.common.helpers import localize
-from zoom_report.attendance import get_report
-from zoom_report.storage import save_report
+from zoom_report.automate.attendance import get_report
+from zoom_report.automate.storage import save_report
 
 
 def get_localized_instances(instances: list[dict]) -> list[tuple]:
