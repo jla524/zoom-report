@@ -7,22 +7,22 @@ from zoom_report.storage import save_report
 
 
 def get_localized_instances(instances: list[dict]) -> list[tuple]:
-    if not instances or 'meetings' not in instances:
-        return []
-    localized = [(meeting['uuid'], localize(meeting['start_time']))
-                 for meeting in instances['meetings']]
-    localized = sorted(localized, key=lambda x: x[1])
-    return localized
+    if instances and 'meetings' in instances:
+        instances = [(meeting['uuid'], localize(meeting['start_time']))
+                     for meeting in instances['meetings']]
+        instances = sorted(instances, key=lambda x: x[1])
+    return instances
 
 
 def process_reports(meeting_id) -> None:
     instances = Zoom().get_meeting_instances(meeting_id)
     instances = get_localized_instances(instances)
     meeting_details = Zoom().get_meeting_details(meeting_id)
-    for instance in instances:
-        report = get_report(instance[0], meeting_details['timezone'])
-        if not report.empty:
-            save_report(report, instance, meeting_details)
+    if instances and 'topic' in meeting_details:
+        for instance in instances:
+            report = get_report(instance[0])
+            if not report.empty:
+                save_report(report, instance, meeting_details)
 
 
 def run() -> None:

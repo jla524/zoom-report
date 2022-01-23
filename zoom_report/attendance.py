@@ -16,12 +16,12 @@ def get_info(uuid: str) -> list[dict]:
     return participants
 
 
-def to_frame(info: dict, timezone: str) -> DataFrame:
+def to_frame(info: dict) -> DataFrame:
     Logger.info("Converting attendance info to DataFrame...")
     frame = DataFrame(info)
     for column in ['join_time', 'leave_time']:
         frame[column] = to_datetime(frame[column]) \
-            .dt.tz_convert(timezone) \
+            .dt.tz_convert(Config.timezone()) \
             .dt.strftime(Config.datetime_format())
     frame['user_email'] = frame['user_email'].fillna('')
     frame.sort_values(['id', 'name', 'join_time'], inplace=True)
@@ -39,10 +39,10 @@ def combine_rejoins(frame: DataFrame) -> DataFrame:
     return frame
 
 
-def get_report(uuid: str, timezone: str) -> DataFrame:
+def get_report(uuid: str) -> DataFrame:
     attendance = get_info(encode_uuid(uuid))
     if not attendance:
         Logger.info(f"Unable to retrieve {uuid}")
         return DataFrame()
-    attendance = to_frame(attendance, timezone)
+    attendance = to_frame(attendance)
     return combine_rejoins(attendance)

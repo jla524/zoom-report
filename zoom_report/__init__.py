@@ -48,6 +48,7 @@ class Config(metaclass=ThreadSafeMeta):
         __zoom_jwt_token = __config[__zoom_jwt_token_key]
         __jwt_token_expire = 604800
         __jwt_token_algo = 'HS256'
+        __timezone = 'America/Vancouver'
         __datetime_format = '%Y-%m-%d %H:%M:%S'
         __config_dir = Path().home() / '.config' / __package
         __base_dir = Path(__file__).resolve(strict=True).parent.parent
@@ -152,6 +153,13 @@ class Config(metaclass=ThreadSafeMeta):
         @description: getter for jwt token algorithm
         """
         return cls.__jwt_token_algo
+
+    @classmethod
+    def timezone(cls) -> str:
+        """
+        @description: getter for timzone
+        """
+        return cls.__timezone
 
     @classmethod
     def datetime_format(cls) -> str:

@@ -35,7 +35,7 @@ def to_ragic(source_file: Path, meeting_info: dict) -> None:
         Logger.info("An error occurred when writing to attendance.")
         Logger.error(response['msg'])
         return
-    frame = read_csv(source_file)
+    frame = read_csv(source_file).fillna('')
     for _, row in frame.iterrows():
         response = Ragic().write_participants(meeting_info['uuid'], row)
         if response['status'] == 'INVALID':
