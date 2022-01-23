@@ -8,7 +8,7 @@ Automate Zoom attendance reports with Python.
 
 2. Install dependencies with `poetry install`
 
-3. Run the script with `poetry run report <meeting-id>`
+3. Run the script with `poetry run report -m <meeting-id>`
 
 ## References
 
