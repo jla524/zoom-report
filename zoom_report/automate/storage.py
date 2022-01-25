@@ -1,5 +1,5 @@
 from pathlib import Path
-from pandas import read_csv, DataFrame
+from pandas import DataFrame
 from zoom_report import Config
 from zoom_report.api.ragic import Ragic
 from zoom_report.api.dropbox import TransferData
@@ -28,14 +28,13 @@ def to_dropbox(source_file: Path) -> None:
     Logger.info("File uploaded to " + str(target_file))
 
 
-def to_ragic(source_file: Path, meeting_info: dict) -> None:
+def to_ragic(frame: DataFrame, meeting_info: dict) -> None:
     Logger.info("Writing records to Ragic...")
     response = Ragic().write_attendance(meeting_info)
     if response['status'] == 'INVALID':
         Logger.info("An error occurred when writing to attendance.")
         Logger.error(response['msg'])
         return
-    frame = read_csv(source_file).fillna('')
     for _, row in frame.iterrows():
         response = Ragic().write_participants(meeting_info['uuid'], row)
         if response['status'] == 'INVALID':
@@ -51,4 +50,4 @@ def save_report(data: DataFrame, instance: tuple[str], meeting: dict) -> None:
                     'start_time': start_time,
                     'topic': meeting['topic'],
                     'meeting_id': meeting['id']}
-    to_ragic(file_path, payload_info)
+    to_ragic(data, payload_info)
