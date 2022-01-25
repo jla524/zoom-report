@@ -2,10 +2,10 @@
 Customized system wide logger
 Adapted from https://github.com/mattcoding4days/kickstart
 """
+import sys
 import logging
 from logging.config import dictConfig
 from pathlib import Path
-import sys
 from colorama import Back, Fore, init
 from zoom_report import ThreadSafeMeta, Config
 from zoom_report.logger import LOGGING_CONFIG
@@ -60,7 +60,7 @@ class LoggerLoader(metaclass=ThreadSafeMeta):
         # first test to see if the name is a valid defined logger name
         valid: bool = False
         try:
-            for logger_name in LOGGING_CONFIG["loggers"]:
+            for logger_name in LOGGING_CONFIG['loggers']:
                 if logger_name == Config.env():
                     valid = True
         except KeyError as error:

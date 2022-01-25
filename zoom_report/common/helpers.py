@@ -11,6 +11,7 @@ def encode_uuid(uuid: str) -> str:
 
 def localize(timestamp: str) -> str:
     timestamp = timestamp.replace('Z', '+00:00')
-    timestamp = datetime.fromisoformat(timestamp)
-    timestamp = timestamp.astimezone(None)
-    return timestamp.strftime(Config.datetime_format())
+    timestamp = datetime.fromisoformat(timestamp) \
+        .astimezone(None) \
+        .strftime(Config.datetime_format())
+    return timestamp

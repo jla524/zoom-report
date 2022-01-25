@@ -34,7 +34,6 @@ LOGGING_CONFIG = {
         },
     },
     "loggers": {
-        # dev
         "dev": {
             "handlers": [
                 "console-color",

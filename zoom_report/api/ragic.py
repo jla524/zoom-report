@@ -18,8 +18,7 @@ class Ragic:
 
     def _send_data(self, api_route: str, data: dict) -> requests.Response:
         if not self._validate_data(data):
-            Logger.error("Data is invalid. Unable to write to Ragic.")
-            return None
+            raise TypeError("Payload type check failed.")
         url = f'{self._base_url}/{api_route}'
         api_key = Config.ragic_api_key()
         headers = {'Authorization': f'Basic {api_key}'}

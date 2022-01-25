@@ -42,7 +42,8 @@ def to_ragic(frame: DataFrame, meeting_info: dict) -> None:
             Logger.error(response['msg'])
 
 
-def save_report(data: DataFrame, instance: tuple[str], meeting: dict) -> None:
+def save_report(data: DataFrame, meeting: dict,
+                instance: tuple[str, str]) -> None:
     uuid, start_time = instance
     file_path = write_csv(data, meeting['topic'], start_time, uuid)
     to_dropbox(file_path)

@@ -11,7 +11,7 @@ class ThreadSafeMeta(type):
     """
     This is a thread-safe implementation of Singleton.
     """
-    _instances = {}
+    _instances: dict = {}
     _lock = Lock()
 
     def __call__(cls, *args, **kwargs):

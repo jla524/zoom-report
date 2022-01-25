@@ -1,3 +1,4 @@
+from typing import Sequence
 from datetime import date, timedelta
 from zoom_report import Config
 from zoom_report.command_line import Cli
@@ -7,12 +8,13 @@ from zoom_report.automate.attendance import get_report
 from zoom_report.automate.storage import save_report
 
 
-def localize_instances(instances: dict) -> list[tuple]:
-    if instances and 'meetings' in instances:
-        instances = [(meeting['uuid'], localize(meeting['start_time']))
-                     for meeting in instances['meetings']]
-        instances = sorted(instances, key=lambda x: x[1])
-    return instances
+def localize_instances(instances: dict) -> Sequence:
+    if not instances or 'meetings' not in instances:
+        return []
+    localized = [(meeting['uuid'], localize(meeting['start_time']))
+                 for meeting in instances['meetings']]
+    localized = sorted(localized, key=lambda x: x[1])
+    return localized
 
 
 def filter_instances(instances: list[tuple], days: int = 3) -> list[tuple]:
@@ -37,7 +39,7 @@ def process_reports(meeting_id: str, recent: bool) -> None:
         for instance in instances:
             report = get_report(instance[0])
             if not report.empty:
-                save_report(report, instance, details)
+                save_report(report, details, instance)
 
 
 def run() -> None:
