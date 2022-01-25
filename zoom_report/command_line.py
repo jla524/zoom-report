@@ -1,8 +1,14 @@
+"""
+Parse command line arguments for this app
+"""
 import argparse
 from zoom_report import ThreadSafeMeta
 
 
 class Cli(metaclass=ThreadSafeMeta):
+    """
+    App specific arguments go here
+    """
     def __init__(self):
         self.__parser = argparse.ArgumentParser(
             prog='zoom_report',
