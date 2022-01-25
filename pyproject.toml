@@ -12,6 +12,7 @@ colorlog = "^6.6.0"
 colorama = "^0.4.4"
 dropbox = "^11.25.0"
 mypy = "^0.931"
+types-requests = "^2.27.7"
 
 [tool.poetry.dev-dependencies]
 requests = "^2.27.1"
