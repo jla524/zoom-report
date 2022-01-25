@@ -6,7 +6,7 @@ import sys
 import logging
 from logging.config import dictConfig
 from pathlib import Path
-from colorama import Back, Fore, init
+from colorama import init, Back, Fore
 from zoom_report import ThreadSafeMeta, Config
 from zoom_report.logger import LOGGING_CONFIG
 
@@ -14,7 +14,7 @@ from zoom_report.logger import LOGGING_CONFIG
 init(autoreset=True)
 
 
-class LoggerLoader(metaclass=ThreadSafeMeta):
+class LoggerLoader:
     """
     A global singleton logger loader, not to be used directly
     only to be used by the actual logging object
@@ -60,7 +60,7 @@ class LoggerLoader(metaclass=ThreadSafeMeta):
         # first test to see if the name is a valid defined logger name
         valid: bool = False
         try:
-            for logger_name in LOGGING_CONFIG['loggers']:
+            for logger_name in LOGGING_CONFIG["loggers"]:
                 if logger_name == Config.env():
                     valid = True
         except KeyError as error:
@@ -72,12 +72,11 @@ class LoggerLoader(metaclass=ThreadSafeMeta):
             sys.stderr.write(
                 f"\n{Back.BLACK}{Fore.RED}{Config.env()}: "
                 "IS NOT A VALID LOGGER\n"
-                f"{Back.BLACK}{Fore.YELLOW}"
-                "FALLING BACK TO {Config.default_env()}\n")
+                f"{Back.BLACK}{Fore.YELLOW}FALLING BACK TO "
+                f"{Config.default_env()}\n")
             logger = logging.getLogger(Config.default_env())
             return logger
 
-        # name was valid
         logger = logging.getLogger(Config.env())
         return logger
 
