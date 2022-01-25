@@ -10,3 +10,12 @@ def run_analyzer() -> None:
     except sp.CalledProcessError as error:
         print(error)
         sys.exit(1)
+
+
+def run_linter() -> None:
+    path = Config.base_dir() / Config.package()
+    try:
+        sp.run(f'pylint {path}', check=True, shell=True)
+    except sp.CalledProcessError as error:
+        print(error)
+        sys.exit(1)
