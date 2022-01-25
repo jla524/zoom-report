@@ -19,10 +19,10 @@ def process_reports(meeting_id: str, recent: bool) -> None:
     instances = get_instances(meeting_id, recent)
     details = get_details(meeting_id)
     if not (instances and details):
-        Logger.error("Unable to process reports")
+        Logger.warn("Instances not found or ID is invalid.")
         return
     for instance in instances:
-        if len(instances) != 2:
+        if len(instance) != 2:
             Logger.error("Expected two elements in instance")
             continue
         report = get_report(instance[0])
