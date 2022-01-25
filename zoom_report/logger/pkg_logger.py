@@ -2,6 +2,7 @@
 Customized system wide logger
 Adapted from https://github.com/mattcoding4days/kickstart
 """
+# pylint: disable=R0903
 import sys
 import logging
 from logging.config import dictConfig
