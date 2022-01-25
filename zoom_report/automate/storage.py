@@ -38,7 +38,7 @@ def to_dropbox(source_file: Path) -> None:
     :returns: None
     """
     Logger.info("Uploading report to DropBox...")
-    transfer = TransferData(Config.dropbox_api_key())
+    transfer = TransferData(str(Config.dropbox_api_key()))
     target_file = Config.dropbox_storage_dir() / source_file.name
     transfer.upload_file(source_file, target_file)
     Logger.info("File uploaded to " + str(target_file))
@@ -54,13 +54,13 @@ def to_ragic(frame: DataFrame, meeting_info: dict) -> None:
     Logger.info("Writing records to Ragic...")
     response = Ragic().write_attendance(meeting_info)
     if response['status'] == 'INVALID':
-        Logger.info("An error occurred when writing to attendance.")
+        Logger.warn("An error occurred when writing to attendance.")
         Logger.error(response['msg'])
         return
     for _, row in frame.iterrows():
         response = Ragic().write_participants(meeting_info['uuid'], row)
         if response['status'] == 'INVALID':
-            Logger.info("An error occured when writing to participants.")
+            Logger.warn("An error occured when writing to participants.")
             Logger.error(response['msg'])
 
 
@@ -72,6 +72,9 @@ def save_report(data: DataFrame, meeting: dict,
     :param meeting: meeting info from Zoom
     :param instance: instance info fromr Zoom
     """
+    if data.empty:
+        Logger.error("DataFrame is empty")
+        return
     uuid, start_time = instance
     file_path = write_csv(data, meeting['topic'], start_time, uuid)
     to_dropbox(file_path)

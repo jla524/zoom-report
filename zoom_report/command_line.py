@@ -1,13 +1,14 @@
 """
 Parse command line arguments for this app
 """
+# pylint: disable=R0903
 import argparse
 from zoom_report import ThreadSafeMeta
 
 
 class Cli(metaclass=ThreadSafeMeta):
     """
-    App specific arguments go here
+    App specific arguments
     """
     def __init__(self):
         self.__parser = argparse.ArgumentParser(

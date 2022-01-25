@@ -12,7 +12,7 @@ def get_info(uuid: str) -> list[dict]:
     """
     Get an attendance info for a given UUID.
     :param uuid: a meeting UUID to retrieve info from
-    :returns: a list of participants info
+    :returns: participants info
     """
     Logger.info("Retrieving attendance info...")
     zoom = Zoom()
@@ -26,9 +26,9 @@ def get_info(uuid: str) -> list[dict]:
 
 def to_frame(info: list[dict]) -> DataFrame:
     """
-    Convert participants info to a DataFrame.
-    :param info: a list of participants info
-    :returns: a DataFrame with participants info and localized timestamps
+    Convert participants info to DataFrame format with localized timestamps.
+    :param info: participants info from Zoom
+    :returns: participants DataFrame with localized timestamps
     """
     Logger.info("Converting attendance info to DataFrame...")
     frame = DataFrame(info)
@@ -43,9 +43,9 @@ def to_frame(info: list[dict]) -> DataFrame:
 
 def combine_rejoins(frame: DataFrame) -> DataFrame:
     """
-    Combine participants info if duplicates are found.
-    :param frame: a DataFrame with participants info
-    :returns: a DataFrame with aggregated duration and timestamps
+    Combine participants info when a duplicate is found.
+    :param frame: participants DataFrame
+    :returns: participants DataFrame with combined durations and timestamps
     """
     Logger.info("Combining rejoins...")
     frame = frame.groupby(['id', 'name', 'user_email']) \
@@ -61,7 +61,7 @@ def get_report(uuid: str) -> DataFrame:
     """
     Retrieve an attendance report for a given UUID.
     :param uuid: a meeting UUID to retrieve info from
-    :returns: a DataFrame with aggregated attedance data
+    :returns: participants DataFrame with aggregated metrics
     """
     attendance = get_info(encode_uuid(uuid))
     if not attendance:
