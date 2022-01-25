@@ -1,9 +1,17 @@
+"""
+A wrapper around jwt
+"""
 from time import time
 from authlib.jose import jwt
 from zoom_report import Config
 
 
 def renew_jwt_token(expires: int = 604800) -> str:
+    """
+    Generate a new JWT token
+    :param expires: number of seconds before the token expires
+    :returns: a new token
+    """
     time_now = time()
     payload = {'aud': None,
                'iat': time_now,

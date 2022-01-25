@@ -10,7 +10,7 @@ from zoom_report.logger.pkg_logger import Logger
 
 def get_info(uuid: str) -> list[dict]:
     """
-    Get the attendance info for the given UUID.
+    Get an attendance info for a given UUID.
     :param uuid: a meeting UUID to retrieve info from
     :returns: a list of participants info
     """
@@ -26,7 +26,7 @@ def get_info(uuid: str) -> list[dict]:
 
 def to_frame(info: list[dict]) -> DataFrame:
     """
-    Convert the participants info to a DataFrame.
+    Convert participants info to a DataFrame.
     :param info: a list of participants info
     :returns: a DataFrame with participants info and localized timestamps
     """
@@ -59,7 +59,7 @@ def combine_rejoins(frame: DataFrame) -> DataFrame:
 
 def get_report(uuid: str) -> DataFrame:
     """
-    Retrieve the attendance report for a given UUID.
+    Retrieve an attendance report for a given UUID.
     :param uuid: a meeting UUID to retrieve info from
     :returns: a DataFrame with aggregated attedance data
     """

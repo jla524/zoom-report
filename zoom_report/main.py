@@ -45,8 +45,8 @@ def filter_instances(instances: list[tuple], days: int = 3) -> list[tuple]:
 
 def process_reports(meeting_id: str, recent: bool) -> None:
     """
-    Write meeting instances for the given meeting ID to storage.
-    :param meeting_id: the Zoom meeting ID to process
+    Write meeting instances for a given meeting ID to storage.
+    :param meeting_id: a Zoom meeting ID to process
     :param recent: only retrieve recent instances
     :returns: None
     """

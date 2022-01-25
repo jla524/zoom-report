@@ -1,23 +1,35 @@
+"""
+A wrapper for the Ragic API
+"""
 import requests
 from zoom_report import Config
 from zoom_report.common.enums import Http, Cogv
 from zoom_report.logger.pkg_logger import Logger
 
 
+def validate_data(data: dict) -> bool:
+    """
+    Ensure the payload data is in the proper format.
+    :param data: a dict with payload data to validate
+    :returns: True if data is valid and False otherwise
+    """
+    if not isinstance(data, dict):
+        return False
+    for key, value in data.items():
+        if not (isinstance(key, (str, int))
+                and isinstance(value, (str, int, float))):
+            return False
+    return True
+
+
 class Ragic:
+    """
+    Use the requests library to talk to the Ragic API
+    """
     _base_url = 'https://na3.ragic.com'
 
-    def _validate_data(self, data: dict) -> bool:
-        if not isinstance(data, dict):
-            return False
-        for key, value in data.items():
-            if not (isinstance(key, str)
-                    and isinstance(value, (str, int, float))):
-                return False
-        return True
-
     def _send_data(self, api_route: str, data: dict) -> requests.Response:
-        if not self._validate_data(data):
+        if not validate_data(data):
             raise TypeError("Payload type check failed.")
         url = f'{self._base_url}/{api_route}'
         api_key = Config.ragic_api_key()
@@ -28,6 +40,11 @@ class Ragic:
         return response
 
     def write_attendance(self, attendance_info: dict) -> dict:
+        """
+        Write attendance data to Ragic.
+        :param attendance_info: attendance info from Zoom
+        :returns: response data from Ragic
+        """
         payload = {Cogv.MEETING_NUMBER: attendance_info['uuid'],
                    Cogv.TOPIC: attendance_info['topic'],
                    Cogv.START_TIME: attendance_info['start_time'],
@@ -36,6 +53,12 @@ class Ragic:
         return self._send_data(route, payload).json()
 
     def write_participants(self, uuid: str, participant_info: dict) -> dict:
+        """
+        Write participants data to Ragic.
+        :param uuid: a UUID of the meeting
+        :param participants_info: participants info from Zoom
+        :returns: response data from Ragic
+        """
         payload = {Cogv.SUB_MEETING_NUMBER: uuid,
                    Cogv.NAME: participant_info['name'],
                    Cogv.EMAIL: participant_info['user_email'],

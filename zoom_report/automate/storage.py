@@ -13,10 +13,10 @@ def write_csv(data: DataFrame, topic: str, timestamp: str, uuid: str) -> Path:
     """
     Save a given DataFrame as a CSV file with topic, timestamp, and UUID.
     :param data: a DataFrame to save
-    :param topic: the topic of the instance
-    :param timestamp: the start time of the instance
-    :param uuid: the UUID of the instance
-    :returns: the Path where the file is stored
+    :param topic: topic of an instance
+    :param timestamp: start time of an instance
+    :param uuid: UUID of an instance
+    :returns: Path where the CSV file is stored
     """
     Logger.info("Saving report as CSV...")
     output_dir = Config.output_dir()
@@ -34,7 +34,7 @@ def write_csv(data: DataFrame, topic: str, timestamp: str, uuid: str) -> Path:
 def to_dropbox(source_file: Path) -> None:
     """
     Upload a given file to a pre-configured directory in DropBox.
-    :param source_file: the Path of the file to upload
+    :param source_file: Path of the file to upload
     :returns: None
     """
     Logger.info("Uploading report to DropBox...")
@@ -48,7 +48,7 @@ def to_ragic(frame: DataFrame, meeting_info: dict) -> None:
     """
     Write a given attendance report to a pre-configured route in Ragic.
     :param frame: a DataFrame with attendance data to write
-    :param meeting_info: relevant info for the meeting
+    :param meeting_info: relevant info for a meeting
     :returns: None
     """
     Logger.info("Writing records to Ragic...")
