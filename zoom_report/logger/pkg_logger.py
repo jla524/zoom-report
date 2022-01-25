@@ -14,10 +14,9 @@ from zoom_report.logger import LOGGING_CONFIG
 init(autoreset=True)
 
 
-class LoggerLoader:
+class LoggerLoader(metaclass=ThreadSafeMeta):
     """
-    A global singleton logger loader, not to be used directly
-    only to be used by the actual logging object
+    A global singleton logger loader
     """
 
     def __init__(self):
@@ -26,8 +25,8 @@ class LoggerLoader:
 
     def __load_config(self):
         """
-        @desc: Load the config dictionary
-        @return none
+        Load the config dictionary
+        :returns: none
         """
         # if dump site doesn't exist, create it,
         # and all parent folders leading up to it
@@ -53,9 +52,7 @@ class LoggerLoader:
     def load() -> logging.Logger:
         """
         Return a logger by name.
-        Only logger names that are defined in the config
-        file will be used
-        @return: an instance of Logger configured by custom params
+        :returns: an instance of Logger configured by custom params
         """
         # first test to see if the name is a valid defined logger name
         valid: bool = False
@@ -90,31 +87,31 @@ class Logger(metaclass=ThreadSafeMeta):
     @classmethod
     def debug(cls, msg: str):
         """
-        @description: wrapper around the logging object
-        @param: msg, the message to log
+        Wrapper around the logging object
+        :param msg: the message to log
         """
         cls.__logger.debug(msg)
 
     @classmethod
     def info(cls, msg: str):
         """
-        @description: wrapper around the logging object
-        @param: msg, the message to log
+        Wrapper around the logging object
+        :param msg: the message to log
         """
         cls.__logger.info(msg)
 
     @classmethod
     def warn(cls, msg: str):
         """
-        @description: wrapper around the logging object
-        @param: msg, the message to log
+        Wrapper around the logging object
+        :param msg: the message to log
         """
         cls.__logger.warning(msg)
 
     @classmethod
     def error(cls, msg: str):
         """
-        @description: wrapper around the logging object
-        @param: msg, the message to log
+        Wrapper around the logging object
+        :param msg: the message to log
         """
         cls.__logger.error(msg)

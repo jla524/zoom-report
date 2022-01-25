@@ -17,10 +17,10 @@ def get_info(uuid: str) -> list[dict]:
     Logger.info("Retrieving attendance info...")
     zoom = Zoom()
     response = zoom.get_participants(uuid)
-    participants = response.get('participants')
+    participants = response['participants']
     while token := response.get('next_page_token'):
         response = zoom.get_participants(uuid, next_page_token=token)
-        participants += response.get('participants')
+        participants += response['participants']
     return participants
 
 
