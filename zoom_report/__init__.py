@@ -51,8 +51,8 @@ class Config(metaclass=ThreadSafeMeta):
         __datetime_format = '%Y-%m-%d %H:%M:%S'
         __config_dir = Path().home() / '.config' / __package
         __base_dir = Path(__file__).resolve(strict=True).parent.parent
-        __meeting_id_file = __base_dir / 'meeting_id.txt'
-        __output_dir = __base_dir / 'output'
+        __meeting_id_file = __base_dir / 'assets' / 'meeting_id.txt'
+        __output_dir = Path().home() / 'participants'
         __dropbox_storage_dir = Path('/VS-AV/Zoom Meeting Participants')
         __ragic_attendance_route = 'lynvolunteer/cogv/18'
         __ragic_participants_route = 'lynvolunteer/cogv/19'
