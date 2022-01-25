@@ -46,8 +46,6 @@ class Config(metaclass=ThreadSafeMeta):
         __zoom_api_secret = __config['ZOOM_API_SECRET']
         __zoom_jwt_token_key = 'ZOOM_JWT_TOKEN'
         __zoom_jwt_token = __config[__zoom_jwt_token_key]
-        __jwt_token_expire = 604800
-        __jwt_token_algo = 'HS256'
         __timezone = 'America/Vancouver'
         __datetime_format = '%Y-%m-%d %H:%M:%S'
         __config_dir = Path().home() / '.config' / __package
@@ -139,20 +137,6 @@ class Config(metaclass=ThreadSafeMeta):
         if new_token and isinstance(new_token, str):
             set_key(find_dotenv(), cls.__zoom_jwt_token_key, new_token)
             cls.__zoom_jwt_token = new_token
-
-    @classmethod
-    def jwt_token_expire(cls) -> int:
-        """
-        @description: getter for jwt token expiration time (in seconds)
-        """
-        return cls.__jwt_token_expire
-
-    @classmethod
-    def jwt_token_algo(cls) -> str:
-        """
-        @description: getter for jwt token algorithm
-        """
-        return cls.__jwt_token_algo
 
     @classmethod
     def timezone(cls) -> str:
