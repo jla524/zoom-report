@@ -1,3 +1,6 @@
+"""
+Write attendance data to storage
+"""
 from pathlib import Path
 from pandas import DataFrame
 from zoom_report import Config
@@ -7,6 +10,14 @@ from zoom_report.logger.pkg_logger import Logger
 
 
 def write_csv(data: DataFrame, topic: str, timestamp: str, uuid: str) -> Path:
+    """
+    Save a given DataFrame as a CSV file with topic, timestamp, and UUID.
+    :param data: a DataFrame to save
+    :param topic: the topic of the instance
+    :param timestamp: the start time of the instance
+    :param uuid: the UUID of the instance
+    :returns: the Path where the file is stored
+    """
     Logger.info("Saving report as CSV...")
     output_dir = Config.output_dir()
     output_dir.mkdir(exist_ok=True)
@@ -21,6 +32,11 @@ def write_csv(data: DataFrame, topic: str, timestamp: str, uuid: str) -> Path:
 
 
 def to_dropbox(source_file: Path) -> None:
+    """
+    Upload a given file to a pre-configured directory in DropBox.
+    :param source_file: the Path of the file to upload
+    :returns: None
+    """
     Logger.info("Uploading report to DropBox...")
     transfer = TransferData(Config.dropbox_api_key())
     target_file = Config.dropbox_storage_dir() / source_file.name
@@ -29,6 +45,12 @@ def to_dropbox(source_file: Path) -> None:
 
 
 def to_ragic(frame: DataFrame, meeting_info: dict) -> None:
+    """
+    Write a given attendance report to a pre-configured route in Ragic.
+    :param frame: a DataFrame with attendance data to write
+    :param meeting_info: relevant info for the meeting
+    :returns: None
+    """
     Logger.info("Writing records to Ragic...")
     response = Ragic().write_attendance(meeting_info)
     if response['status'] == 'INVALID':
@@ -44,6 +66,12 @@ def to_ragic(frame: DataFrame, meeting_info: dict) -> None:
 
 def save_report(data: DataFrame, meeting: dict,
                 instance: tuple[str, str]) -> None:
+    """
+    Write a given DataFrame into storage.
+    :param data: a DataFrame with attendance data to write
+    :param meeting: meeting info from Zoom
+    :param instance: instance info fromr Zoom
+    """
     uuid, start_time = instance
     file_path = write_csv(data, meeting['topic'], start_time, uuid)
     to_dropbox(file_path)

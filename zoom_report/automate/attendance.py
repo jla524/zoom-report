@@ -1,3 +1,6 @@
+"""
+Retrieve Zoom attendance data
+"""
 from pandas import DataFrame, to_datetime
 from zoom_report import Config
 from zoom_report.api.zoom import Zoom
@@ -6,6 +9,11 @@ from zoom_report.logger.pkg_logger import Logger
 
 
 def get_info(uuid: str) -> list[dict]:
+    """
+    Get the attendance info for the given UUID.
+    :param uuid: a meeting UUID to retrieve info from
+    :returns: a list of participants info
+    """
     Logger.info("Retrieving attendance info...")
     zoom = Zoom()
     response = zoom.get_participants(uuid)
@@ -17,6 +25,11 @@ def get_info(uuid: str) -> list[dict]:
 
 
 def to_frame(info: list[dict]) -> DataFrame:
+    """
+    Convert the participants info to a DataFrame.
+    :param info: a list of participants info
+    :returns: a DataFrame with participants info and localized timestamps
+    """
     Logger.info("Converting attendance info to DataFrame...")
     frame = DataFrame(info)
     for column in ['join_time', 'leave_time']:
@@ -29,6 +42,11 @@ def to_frame(info: list[dict]) -> DataFrame:
 
 
 def combine_rejoins(frame: DataFrame) -> DataFrame:
+    """
+    Combine participants info if duplicates are found.
+    :param frame: a DataFrame with participants info
+    :returns: a DataFrame with aggregated duration and timestamps
+    """
     Logger.info("Combining rejoins...")
     frame = frame.groupby(['id', 'name', 'user_email']) \
         .agg({'duration': 'sum', 'join_time': 'min', 'leave_time': 'max'}) \
@@ -40,9 +58,15 @@ def combine_rejoins(frame: DataFrame) -> DataFrame:
 
 
 def get_report(uuid: str) -> DataFrame:
+    """
+    Retrieve the attendance report for a given UUID.
+    :param uuid: a meeting UUID to retrieve info from
+    :returns: a DataFrame with aggregated attedance data
+    """
     attendance = get_info(encode_uuid(uuid))
     if not attendance:
         Logger.info(f"Unable to retrieve {uuid}")
         return DataFrame()
     attendance = to_frame(attendance)
-    return combine_rejoins(attendance)
+    attendance = combine_rejoins(attendance)
+    return attendance
