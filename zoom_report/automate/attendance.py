@@ -16,7 +16,7 @@ def get_info(uuid: str) -> list[dict]:
     return participants
 
 
-def to_frame(info: dict) -> DataFrame:
+def to_frame(info: list[dict]) -> DataFrame:
     Logger.info("Converting attendance info to DataFrame...")
     frame = DataFrame(info)
     for column in ['join_time', 'leave_time']:
