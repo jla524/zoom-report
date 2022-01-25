@@ -8,9 +8,9 @@ from zoom_report import Config
 
 def encode_uuid(uuid: str) -> str:
     """
-    Double encode a Zoom uuid if it starts with / or contains //.
-    :param uuid: the uuid to encode
-    :returns: the encoded uuid
+    Double encode a UUID if it starts with / or contains //.
+    :param uuid: the UUID to encode
+    :returns: the encoded UUID
     """
     if uuid.startswith('/') or '//' in uuid:
         uuid = quote_plus(quote_plus(uuid))
