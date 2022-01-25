@@ -1,4 +1,12 @@
+"""
+Enumerations for HTTP response codes and data fields
+"""
+
+
 class Http():
+    """
+    HTTP response codes
+    """
     OK = 200
     CREATED = 201
     BAD = 400
@@ -7,6 +15,9 @@ class Http():
 
 
 class Cogv():
+    """
+    Cogv data fields
+    """
     MEETING_NUMBER = '1009850'
     TOPIC = '1009851'
     NO = '1009852'
