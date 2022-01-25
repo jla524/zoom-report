@@ -2,6 +2,7 @@
 Package wide configurations
 """
 import sys
+from typing import Optional
 from pathlib import Path
 from threading import Lock
 from dotenv import dotenv_values, find_dotenv, set_key
@@ -88,42 +89,42 @@ class Config(metaclass=ThreadSafeMeta):
         return cls.__logfile_name
 
     @classmethod
-    def env(cls) -> str:
+    def env(cls) -> Optional[str]:
         """
         @description: getter for config
         """
         return cls.__env
 
     @classmethod
-    def dropbox_api_key(cls) -> str:
+    def dropbox_api_key(cls) -> Optional[str]:
         """
         @description: getter for dropbox api key
         """
         return cls.__dropbox_api_key
 
     @classmethod
-    def ragic_api_key(cls) -> str:
+    def ragic_api_key(cls) -> Optional[str]:
         """
         @description: getter for ragic api key
         """
         return cls.__ragic_api_key
 
     @classmethod
-    def zoom_api_key(cls) -> str:
+    def zoom_api_key(cls) -> Optional[str]:
         """
         @description: getter for zoom api key
         """
         return cls.__zoom_api_key
 
     @classmethod
-    def zoom_api_secret(cls) -> str:
+    def zoom_api_secret(cls) -> Optional[str]:
         """
         @description: getter for zoom api secret
         """
         return cls.__zoom_api_secret
 
     @classmethod
-    def zoom_jwt_token(cls) -> str:
+    def zoom_jwt_token(cls) -> Optional[str]:
         """
         @description: getter for zoom jwt token
         """
