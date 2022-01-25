@@ -3,9 +3,8 @@ The main program to fetch and store attendance reports
 """
 from zoom_report import Config
 from zoom_report.command_line import Cli
-from zoom_report.api.zoom import Zoom
+from zoom_report.process.meetings import get_instances, get_details
 from zoom_report.automate.attendance import get_report
-from zoom_report.process.instances import get_meetings
 from zoom_report.automate.storage import save_report
 from zoom_report.logger.pkg_logger import Logger
 
@@ -17,15 +16,17 @@ def process_reports(meeting_id: str, recent: bool) -> None:
     :param recent: only retrieve recent instances
     :returns: None
     """
-    meetings = get_meetings(meeting_id, recent)
-    details = Zoom().get_meeting_details(meeting_id)
-    if not meetings or not details or 'code' in details:
+    instances = get_instances(meeting_id, recent)
+    details = get_details(meeting_id)
+    if not (instances and details):
         Logger.error("Unable to process reports")
         return
-    for meeting in meetings:
-        report = get_report(meeting[0])
-        if not report.empty:
-            save_report(report, details, meeting)
+    for instance in instances:
+        if len(instances) != 2:
+            Logger.error("Expected two elements in instance")
+            continue
+        report = get_report(instance[0])
+        save_report(report, details, instance)
 
 
 def run() -> None:
