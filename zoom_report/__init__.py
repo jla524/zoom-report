@@ -52,7 +52,7 @@ class Config(metaclass=ThreadSafeMeta):
         __base_dir = Path(__file__).resolve(strict=True).parent.parent
         __meeting_id_file = __base_dir / 'assets' / 'meeting_id.txt'
         __output_dir = Path().home() / 'participants'
-        __dropbox_storage_dir = Path('/VS-AV/Zoom Meeting Participants')
+        __dropbox_storage_dir = '/VS-AV/Zoom Meeting Participants'
         __ragic_attendance_route = 'lynvolunteer/cogv/18'
         __ragic_participants_route = 'lynvolunteer/cogv/19'
     except KeyError as error:
@@ -181,7 +181,7 @@ class Config(metaclass=ThreadSafeMeta):
         return cls.__output_dir
 
     @classmethod
-    def dropbox_storage_dir(cls) -> Path:
+    def dropbox_storage_dir(cls) -> str:
         """
         Getter for dropbox storage directory
         """
