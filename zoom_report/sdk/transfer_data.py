@@ -22,7 +22,7 @@ class TransferData:
         """
         cls.__overwrite = value
 
-    def upload_file(self, source: Path, target: Path) -> None:
+    def upload_file(self, source: Path, target: str) -> None:
         """
         Upload a file to Dropbox.
         :param source: a Path of the file to upload
@@ -37,4 +37,4 @@ class TransferData:
                 if self.__overwrite
                 else files.WriteMode.add)
         with source.open('rb') as file:
-            client.files_upload(file.read(), str(target), mode=mode)
+            client.files_upload(file.read(), target, mode=mode)

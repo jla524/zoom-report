@@ -11,7 +11,7 @@ from zoom_report.logger.pkg_logger import Logger
 
 def extract_instances(info: dict) -> list[tuple[Any, str]]:
     """
-    Convert meeting instances to a list with UUID and localized start time.
+    Convert meeting instances to a sorted list with UUID and local start time.
     :param instances: instances to convert
     :returns: localized instances
     """
