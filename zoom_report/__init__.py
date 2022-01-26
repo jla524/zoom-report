@@ -52,7 +52,6 @@ class Config(metaclass=ThreadSafeMeta):
         __config_dir = (Path().home() / 'AppData'/ 'Local' / __package
                         if os.name == 'nt'
                         else Path().home() / '.config' / __package)
-
         __base_dir = Path(__file__).resolve(strict=True).parent.parent
         __meeting_id_file = __base_dir / 'assets' / 'meeting_id.txt'
         __output_dir = Path().home() / 'participants'
