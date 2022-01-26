@@ -19,4 +19,11 @@ class Cli(metaclass=ThreadSafeMeta):
         self.__parser.add_argument('-a', '--all', action='store_true')
         self.__parser.add_argument('-r', '--recent', action='store_true')
         self.__parser.add_argument('-m', '--meeting', type=int)
-        self.args = self.__parser.parse_args()
+        self.__args = self.__parser.parse_args()
+
+    @property
+    def args(self) -> argparse.Namespace:
+        """
+        Getter for the argparse object
+        """
+        return self.__args
