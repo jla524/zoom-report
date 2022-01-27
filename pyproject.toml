@@ -14,6 +14,7 @@ dropbox = "^11.25.0"
 mypy = "^0.931"
 types-requests = "^2.27.7"
 pylint = "^2.12.2"
+types-pytz = "^2021.3.4"
 
 [tool.poetry.dev-dependencies]
 requests = "^2.27.1"

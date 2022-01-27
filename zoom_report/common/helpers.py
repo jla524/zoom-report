@@ -2,8 +2,8 @@
 Helper functions
 """
 from datetime import datetime
-import pytz
 from urllib.parse import quote_plus
+import pytz
 from zoom_report import Config
 
 
