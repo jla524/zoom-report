@@ -36,6 +36,7 @@ def save_csv(data: DataFrame, file_path: Path) -> bool:
     """
     Logger.info("Saving report as CSV...")
     if file_path.exists():
+        Logger.info("File already exists in storage.")
         return False
     data.to_csv(file_path, index=False)
     Logger.info("Report saved in " + str(file_path))
