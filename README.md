@@ -2,6 +2,8 @@
 
 Automate Zoom attendance reports with Python.
 
+![workflow][0]
+
 ## Quickstart Guide
 
 1. Store API credentials in `.env`
@@ -12,7 +14,7 @@ Automate Zoom attendance reports with Python.
 
 4. Install dependencies with `poetry install`
 
-5. Run the script with `poetry run report -m <meeting-id>`
+5. Run the script with `poetry run report -a`
 
 ## References
 
@@ -29,6 +31,7 @@ Automate Zoom attendance reports with Python.
 [Blazing fast CI with GitHub Actions, Poetry, Black and Pytest][7]
 
 
+[0]: https://user-images.githubusercontent.com/39754370/151487559-836114fa-c624-489f-a596-f2033d9f0f41.png
 [1]: https://python-poetry.org/docs/#installation
 [2]: https://github.com/mattcoding4days/kickstart
 [3]: https://medium.com/swlh/how-i-automate-my-church-organisations-zoom-meeting-attendance-reporting-with-python-419dfe7da58c
