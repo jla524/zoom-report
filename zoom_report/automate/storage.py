@@ -9,29 +9,40 @@ from zoom_report.sdk.transfer_data import TransferData
 from zoom_report.logger.pkg_logger import Logger
 
 
-def write_csv(data: DataFrame, topic: str, timestamp: str, uuid: str) -> Path:
+def generate_filepath(topic: str, uuid: str, start_time: str) -> Path:
     """
-    Save a given DataFrame as a CSV file with topic, timestamp, and UUID.
-    :param data: a DataFrame to save
+    Generate a file path using a topic, start time, and UUID.
     :param topic: topic of an instance
-    :param timestamp: start time of an instance
+    :param start_time: start time of an instance
     :param uuid: UUID of an instance
-    :returns: Path where the CSV file is stored
+    :returns: a generated file path
     """
-    Logger.info("Saving report as CSV...")
+    Logger.info("Generating file name...")
     output_dir = Config.output_dir()
     output_dir.mkdir(exist_ok=True)
-    date = timestamp.split(' ')[0]
+    date = start_time.split(' ')[0]
     topic = topic.replace(' ', '-').replace('/', '-')
     uuid = uuid.replace('/', '-')
     file_name = f'{topic}_{date}_{uuid}.csv'
     output_file = output_dir / file_name
-    data.to_csv(output_file, index=False)
-    Logger.info("Report saved in " + str(output_file))
     return output_file
 
 
-def to_dropbox(source_file: Path) -> None:
+def save_csv(data: DataFrame, file_path: Path) -> bool:
+    """
+    Save a given DataFrame as a CSV file.
+    :param data: a DataFrame to save
+    :returns: True if no existing file is found and False otherwise
+    """
+    Logger.info("Saving report as CSV...")
+    if file_path.exists():
+        return False
+    data.to_csv(file_path, index=False)
+    Logger.info("Report saved in " + str(file_path))
+    return True
+
+
+def upload_to_dropbox(source_file: Path) -> None:
     """
     Upload a given file to a pre-configured directory in DropBox.
     :param source_file: Path of the file to upload
@@ -44,7 +55,7 @@ def to_dropbox(source_file: Path) -> None:
     Logger.info("File uploaded to " + str(target_file))
 
 
-def to_ragic(frame: DataFrame, meeting_info: dict) -> None:
+def write_to_ragic(frame: DataFrame, meeting_info: dict) -> None:
     """
     Write a given attendance report to a pre-configured route in Ragic.
     :param frame: a DataFrame with attendance data to write
@@ -67,7 +78,7 @@ def to_ragic(frame: DataFrame, meeting_info: dict) -> None:
 def save_report(data: DataFrame, meeting: dict,
                 instance: tuple[str, str]) -> None:
     """
-    Write a given DataFrame into storage.
+    Write attendance report into storage.
     :param data: a DataFrame with attendance data to write
     :param meeting: meeting info from Zoom
     :param instance: instance info fromr Zoom
@@ -76,10 +87,11 @@ def save_report(data: DataFrame, meeting: dict,
         Logger.error("DataFrame is empty")
         return
     uuid, start_time = instance
-    file_path = write_csv(data, meeting['topic'], start_time, uuid)
-    to_dropbox(file_path)
-    payload_info = {'uuid': uuid,
-                    'start_time': start_time,
-                    'topic': meeting['topic'],
-                    'meeting_id': meeting['id']}
-    to_ragic(data, payload_info)
+    path = generate_filepath(meeting['topic'], uuid, start_time)
+    if save_csv(data, path):
+        upload_to_dropbox(path)
+        payload_info = {'uuid': uuid,
+                        'start_time': start_time,
+                        'topic': meeting['topic'],
+                        'meeting_id': meeting['id']}
+        write_to_ragic(data, payload_info)
