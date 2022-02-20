@@ -28,7 +28,7 @@ def extract_instances(info: dict) -> list[tuple[Any, str]]:
 
 
 def filter_instances(instances: list[tuple[Any, str]],
-                     days: int = 3) -> list[tuple[Any, str]]:
+                     days: int = 1) -> list[tuple[Any, str]]:
     """
     Filter meeting instances that started in the past n days.
     :param instances: a list of instances to filter
