@@ -29,6 +29,12 @@ class Ragic:
         return True
 
     def _send_data(self, api_route: str, data: dict) -> requests.Response:
+        """
+        Send data to the specified API route.
+        :param api_route: an API route in Ragic
+        :param data: data to be sent to Ragic
+        :returns: a response from Ragic
+        """
         if not self.validate_data(data):
             raise TypeError("Payload type check failed.")
         url = f'{self._base_url}/{api_route}'
