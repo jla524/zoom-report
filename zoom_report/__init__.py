@@ -49,7 +49,7 @@ class Config(metaclass=ThreadSafeMeta):
         __zoom_jwt_token = __config[__zoom_jwt_token_key]
         __timezone = 'America/Vancouver'
         __datetime_format = '%Y-%m-%d %H:%M:%S'
-        __config_dir = (Path().home() / 'AppData'/ 'Local' / __package
+        __config_dir = (Path().home() / 'AppData' / 'Local' / __package
                         if os.name == 'nt'
                         else Path().home() / '.config' / __package)
         __base_dir = Path(__file__).resolve(strict=True).parent.parent
