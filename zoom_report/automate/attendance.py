@@ -2,6 +2,7 @@
 Retrieve Zoom attendance data
 """
 from pandas import DataFrame, to_datetime
+
 from zoom_report import Config
 from zoom_report.api.zoom import Zoom
 from zoom_report.common.helpers import encode_uuid

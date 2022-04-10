@@ -2,7 +2,9 @@
 Write attendance data to storage
 """
 from pathlib import Path
+
 from pandas import DataFrame
+
 from zoom_report import Config
 from zoom_report.api.ragic import Ragic
 from zoom_report.sdk.transfer_data import TransferData

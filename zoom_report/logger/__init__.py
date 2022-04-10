@@ -3,6 +3,7 @@ Set up a thread safe singleton meta class
 Adapted from https://github.com/mattcoding4days/kickstart
 '''
 from typing import Any
+
 from zoom_report import Config
 
 LOGGING_CONFIG: dict[str, Any] = {

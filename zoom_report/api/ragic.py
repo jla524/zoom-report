@@ -2,6 +2,7 @@
 A wrapper for the Ragic API
 """
 import requests
+
 from zoom_report import Config
 from zoom_report.common.enums import Http, Cogv
 from zoom_report.logger.pkg_logger import Logger
@@ -22,6 +23,7 @@ class Ragic:
         """
         if not isinstance(data, dict):
             return False
+
         for key, value in data.items():
             if not (isinstance(key, (str, int))
                     and isinstance(value, (str, int, float))):
@@ -37,9 +39,11 @@ class Ragic:
         """
         if not self.validate_data(data):
             raise TypeError("Payload type check failed.")
+
         url = f'{self._base_url}/{api_route}'
         api_key = Config.ragic_api_key()
         headers = {'Authorization': f'Basic {api_key}'}
+
         response = requests.post(url, data=data, headers=headers)
         if response.status_code == Http.OK:
             Logger.info(f"Data sent to {url}.")

@@ -7,7 +7,9 @@ import sys
 import logging
 from logging.config import dictConfig
 from pathlib import Path
+
 from colorama import init, Back, Fore
+
 from zoom_report import ThreadSafeMeta, Config
 from zoom_report.logger import LOGGING_CONFIG
 

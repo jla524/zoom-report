@@ -6,6 +6,7 @@ import sys
 from typing import Optional
 from pathlib import Path
 from threading import Lock
+
 from dotenv import dotenv_values, find_dotenv, set_key
 
 
@@ -36,7 +37,7 @@ class Config(metaclass=ThreadSafeMeta):
     """
     try:
         __package = 'zoom_report'
-        __version = '0.3.0'
+        __version = '1.0.0'
         __default_env = 'dev'
         __logfile_name = f'{__package}-{__version}.log'
         __config = dotenv_values(find_dotenv())

@@ -2,6 +2,7 @@
 A wrapper for the Dropbox SDK
 """
 from pathlib import Path
+
 from dropbox import Dropbox, files
 
 
@@ -40,9 +41,11 @@ class TransferData:
         """
         if not source.is_file():
             raise FileNotFoundError("The file to upload does not exist.")
+
         client = Dropbox(self.__access_token)
         mode = (files.WriteMode.overwrite
                 if self.__overwrite
                 else files.WriteMode.add)
+
         with source.open('rb') as file:
             client.files_upload(file.read(), target, mode=mode)

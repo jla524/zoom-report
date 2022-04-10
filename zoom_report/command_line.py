@@ -3,6 +3,7 @@ Parse command line arguments for this app
 """
 # pylint: disable=R0903
 import argparse
+
 from zoom_report import ThreadSafeMeta
 
 

@@ -3,7 +3,9 @@ Helper functions
 """
 from datetime import datetime
 from urllib.parse import quote_plus
+
 import pytz
+
 from zoom_report import Config
 
 
@@ -26,6 +28,7 @@ def localize(timestamp: str) -> str:
     """
     timestamp = timestamp.replace('Z', '+00:00')
     timezone = pytz.timezone(Config.timezone())
+
     timestamp = datetime.fromisoformat(timestamp) \
         .astimezone(timezone) \
         .strftime(Config.datetime_format())
