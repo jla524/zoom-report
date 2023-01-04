@@ -22,10 +22,10 @@ def generate_filepath(topic: str, uuid: str, start_time: str) -> Path:
     Logger.info("Generating file name...")
     output_dir = Config.output_dir()
     output_dir.mkdir(exist_ok=True)
-    date = start_time.split(' ')[0]
-    topic = topic.replace(' ', '-').replace('/', '-')
-    uuid = uuid.replace('/', '-')
-    file_name = f'{topic}_{date}_{uuid}.csv'
+    date = start_time.split(" ")[0]
+    topic = topic.replace(" ", "-").replace("/", "-")
+    uuid = uuid.replace("/", "-")
+    file_name = f"{topic}_{date}_{uuid}.csv"
     output_file = output_dir / file_name
     return output_file
 
@@ -67,19 +67,18 @@ def write_to_ragic(frame: DataFrame, meeting_info: dict) -> None:
     """
     Logger.info("Writing records to Ragic...")
     response = Ragic().write_attendance(meeting_info)
-    if response['status'] == 'INVALID':
+    if response["status"] == "INVALID":
         Logger.warn("An error occurred when writing to attendance.")
-        Logger.error(response['msg'])
+        Logger.error(response["msg"])
         return
     for _, row in frame.iterrows():
-        response = Ragic().write_participants(meeting_info['uuid'], row)
-        if response['status'] == 'INVALID':
+        response = Ragic().write_participants(meeting_info["uuid"], row)
+        if response["status"] == "INVALID":
             Logger.warn("An error occured when writing to participants.")
-            Logger.error(response['msg'])
+            Logger.error(response["msg"])
 
 
-def save_report(data: DataFrame, meeting: dict,
-                instance: tuple[str, str]) -> None:
+def save_report(data: DataFrame, meeting: dict, instance: tuple[str, str]) -> None:
     """
     Write attendance report into storage.
     :param data: a DataFrame with attendance data to write
@@ -87,14 +86,16 @@ def save_report(data: DataFrame, meeting: dict,
     :param instance: instance info fromr Zoom
     """
     if data.empty:
-        Logger.error("DataFrame is empty")
+        Logger.warn("Nothing to write, DataFrame is empty")
         return
     uuid, start_time = instance
-    path = generate_filepath(meeting['topic'], uuid, start_time)
+    path = generate_filepath(meeting["topic"], uuid, start_time)
     if save_csv(data, path):
-        #upload_to_dropbox(path)
-        payload_info = {'uuid': uuid,
-                        'start_time': start_time,
-                        'topic': meeting['topic'],
-                        'meeting_id': meeting['id']}
+        upload_to_dropbox(path)
+        payload_info = {
+            "uuid": uuid,
+            "start_time": start_time,
+            "topic": meeting["topic"],
+            "meeting_id": meeting["id"],
+        }
         write_to_ragic(data, payload_info)

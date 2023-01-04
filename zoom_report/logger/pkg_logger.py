@@ -43,12 +43,13 @@ class LoggerLoader(metaclass=ThreadSafeMeta):
         except ValueError as error:
             sys.stderr.write(
                 f"{Fore.RED}Loading default logging config failed, "
-                f"syntax error\n\n{error}")
+                f"syntax error\n\n{error}"
+            )
             sys.exit(1)
         except KeyError as error:
             sys.stderr.write(
-                f"{Fore.RED}Loading logging config failed, "
-                f"syntax error\n\n{error}")
+                f"{Fore.RED}Loading logging config failed, " f"syntax error\n\n{error}"
+            )
             sys.exit(1)
 
     @staticmethod
@@ -73,7 +74,8 @@ class LoggerLoader(metaclass=ThreadSafeMeta):
                 f"\n{Back.BLACK}{Fore.RED}{Config.env()}: "
                 "IS NOT A VALID LOGGER\n"
                 f"{Back.BLACK}{Fore.YELLOW}FALLING BACK TO "
-                f"{Config.default_env()}\n")
+                f"{Config.default_env()}\n"
+            )
             logger = logging.getLogger(Config.default_env())
             return logger
 
@@ -85,6 +87,7 @@ class Logger(metaclass=ThreadSafeMeta):
     """
     The actual logger class to use
     """
+
     __logger = LoggerLoader().load()
 
     @classmethod

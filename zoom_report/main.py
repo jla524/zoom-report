@@ -41,6 +41,6 @@ def run() -> None:
         process_reports(cli.args.meeting, cli.args.recent)
     if cli.args.all:
         Logger.info("Processing stored meeting IDs...")
-        with Config.meeting_id_file().open('r') as file:
+        with Config.meeting_id_file().open("r") as file:
             for meeting_id in file.read().splitlines():
                 process_reports(meeting_id, cli.args.recent)

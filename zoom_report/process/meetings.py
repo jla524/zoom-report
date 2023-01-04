@@ -17,21 +17,22 @@ def extract_instances(info: dict) -> list[tuple[Any, str]]:
     :returns: localized instances
     """
     Logger.info("Extracting meeting UUIDs and local start times...")
-    if not info or 'meetings' not in info:
+    if not info or "meetings" not in info:
         return []
 
     instances = []
-    for meeting in info['meetings']:
-        if 'uuid' in meeting and 'start_time' in meeting:
-            instance = (meeting['uuid'], localize(meeting['start_time']))
+    for meeting in info["meetings"]:
+        if "uuid" in meeting and "start_time" in meeting:
+            instance = (meeting["uuid"], localize(meeting["start_time"]))
             instances.append(instance)
 
     instances = sorted(instances, key=lambda x: x[1])
     return instances
 
 
-def filter_instances(instances: list[tuple[Any, str]],
-                     days: int = 1) -> list[tuple[Any, str]]:
+def filter_instances(
+    instances: list[tuple[Any, str]], days: int = 1
+) -> list[tuple[Any, str]]:
     """
     Filter meeting instances that started in the past n days.
     :param instances: a list of instances to filter
@@ -40,13 +41,12 @@ def filter_instances(instances: list[tuple[Any, str]],
     """
     Logger.info(f"Filtering meetings that started in the past {days} days...")
     if instances:
-        date_format = Config.datetime_format().split(' ', maxsplit=1)[0]
-        start_date = (date.today() - timedelta(days=days)) \
-            .strftime(date_format)
+        date_format = Config.datetime_format().split(" ", maxsplit=1)[0]
+        start_date = (date.today() - timedelta(days=days)).strftime(date_format)
         index = len(instances) - 1
         while instances[index][1] > start_date:
             index -= 1
-        instances = instances[index+1:]
+        instances = instances[index + 1 :]
     return instances
 
 
@@ -73,8 +73,8 @@ def get_details(meeting_id: str) -> dict[str, Any]:
     """
     Logger.info("Retrieving meeting details...")
     response = Zoom().get_meeting_details(meeting_id)
-    if 'code' in response:
+    if "code" in response:
         Logger.warn("An error occured when retrieving meeting details.")
-        Logger.error(response['message'])
+        Logger.error(response["message"])
         return {}
     return response

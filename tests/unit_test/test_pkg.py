@@ -8,11 +8,11 @@ def test_package():
     """
     Test package
     """
-    assert Config.package() == 'zoom_report'
+    assert Config.package() == "zoom_report"
 
 
 def test_env():
     """
     Test env
     """
-    assert Config.env() == 'dev'
+    assert Config.env() == "dev"

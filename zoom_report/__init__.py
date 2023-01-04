@@ -14,6 +14,7 @@ class ThreadSafeMeta(type):
     """
     A thread-safe implementation of Singleton
     """
+
     _instances: dict = {}
     _lock = Lock()
 
@@ -35,30 +36,33 @@ class Config(metaclass=ThreadSafeMeta):
       configuration from a .env file, once and only once into this object,
       this object can be used through-out the code base
     """
+
     try:
-        __package = 'zoom_report'
-        __version = '1.0.0'
-        __default_env = 'dev'
-        __logfile_name = f'{__package}-{__version}.log'
+        __package = "zoom_report"
+        __version = "1.0.0"
+        __default_env = "dev"
+        __logfile_name = f"{__package}-{__version}.log"
         __config = dotenv_values(find_dotenv())
-        __env = __config['APP_ENV']
-        __dropbox_api_key = __config['DROPBOX_API_KEY']
-        __ragic_api_key = __config['RAGIC_API_KEY']
-        __zoom_api_key = __config['ZOOM_API_KEY']
-        __zoom_api_secret = __config['ZOOM_API_SECRET']
-        __zoom_jwt_token_key = 'ZOOM_JWT_TOKEN'
+        __env = __config["APP_ENV"]
+        __dropbox_api_key = __config["DROPBOX_API_KEY"]
+        __ragic_api_key = __config["RAGIC_API_KEY"]
+        __zoom_api_key = __config["ZOOM_API_KEY"]
+        __zoom_api_secret = __config["ZOOM_API_SECRET"]
+        __zoom_jwt_token_key = "ZOOM_JWT_TOKEN"
         __zoom_jwt_token = __config[__zoom_jwt_token_key]
-        __timezone = 'America/Vancouver'
-        __datetime_format = '%Y-%m-%d %H:%M:%S'
-        __config_dir = (Path().home() / 'AppData' / 'Local' / __package
-                        if os.name == 'nt'
-                        else Path().home() / '.config' / __package)
+        __timezone = "America/Vancouver"
+        __datetime_format = "%Y-%m-%d %H:%M:%S"
+        __config_dir = (
+            Path().home() / "AppData" / "Local" / __package
+            if os.name == "nt"
+            else Path().home() / ".config" / __package
+        )
         __base_dir = Path(__file__).resolve(strict=True).parent.parent
-        __meeting_id_file = __base_dir / 'assets' / 'meeting_id.txt'
-        __output_dir = Path().home() / 'participants'
-        __dropbox_storage_dir = '/VS-AV/Zoom Meeting Participants'
-        __ragic_attendance_route = 'lynvolunteer/cogv/18'
-        __ragic_participants_route = 'lynvolunteer/cogv/19'
+        __meeting_id_file = __base_dir / "assets" / "meeting_id.txt"
+        __output_dir = Path().home() / "participants"
+        __dropbox_storage_dir = "/VS-AV/Zoom Meeting Participants"
+        __ragic_attendance_route = "lynvolunteer/cogv/18"
+        __ragic_participants_route = "lynvolunteer/cogv/19"
     except KeyError as error:
         sys.stderr.write(f"Dotenv config error: {error} is missing\n")
         sys.exit(1)

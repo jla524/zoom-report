@@ -46,5 +46,5 @@ class TransferData:
         client = Dropbox(self.__access_token)
         mode = files.WriteMode.overwrite if self.__overwrite else files.WriteMode.add
 
-        with source.open('rb') as file:
+        with source.open("rb") as file:
             client.files_upload(file.read(), target, mode=mode)

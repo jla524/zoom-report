@@ -12,7 +12,8 @@ class Ragic:
     """
     Use the requests library to talk to the Ragic API
     """
-    _base_url = 'https://na3.ragic.com'
+
+    _base_url = "https://na3.ragic.com"
 
     @staticmethod
     def validate_data(data: dict) -> bool:
@@ -25,8 +26,9 @@ class Ragic:
             return False
 
         for key, value in data.items():
-            if not (isinstance(key, (str, int))
-                    and isinstance(value, (str, int, float))):
+            if not (
+                isinstance(key, (str, int)) and isinstance(value, (str, int, float))
+            ):
                 return False
         return True
 
@@ -40,9 +42,9 @@ class Ragic:
         if not self.validate_data(data):
             raise TypeError("Payload type check failed.")
 
-        url = f'{self._base_url}/{api_route}'
+        url = f"{self._base_url}/{api_route}"
         api_key = Config.ragic_api_key()
-        headers = {'Authorization': f'Basic {api_key}'}
+        headers = {"Authorization": f"Basic {api_key}"}
 
         response = requests.post(url, data=data, headers=headers)
         if response.status_code == Http.OK:
@@ -55,10 +57,12 @@ class Ragic:
         :param attendance_info: attendance info from Zoom
         :returns: response data from Ragic
         """
-        payload = {Cogv.MEETING_NUMBER: attendance_info['uuid'],
-                   Cogv.TOPIC: attendance_info['topic'],
-                   Cogv.START_TIME: attendance_info['start_time'],
-                   Cogv.MEETING_ID: attendance_info['meeting_id']}
+        payload = {
+            Cogv.MEETING_NUMBER: attendance_info["uuid"],
+            Cogv.TOPIC: attendance_info["topic"],
+            Cogv.START_TIME: attendance_info["start_time"],
+            Cogv.MEETING_ID: attendance_info["meeting_id"],
+        }
         route = Config.ragic_attendance_route()
         return self._send_data(route, payload).json()
 
@@ -69,11 +73,13 @@ class Ragic:
         :param participants_info: participants info from Zoom
         :returns: response data from Ragic
         """
-        payload = {Cogv.SUB_MEETING_NUMBER: uuid,
-                   Cogv.NAME: participant_info['name'],
-                   Cogv.EMAIL: participant_info['user_email'],
-                   Cogv.JOIN_TIME: participant_info['join_time'],
-                   Cogv.LEAVE_TIME: participant_info['leave_time'],
-                   Cogv.TOTAL_DURATION: participant_info['total_duration']}
+        payload = {
+            Cogv.SUB_MEETING_NUMBER: uuid,
+            Cogv.NAME: participant_info["name"],
+            Cogv.EMAIL: participant_info["user_email"],
+            Cogv.JOIN_TIME: participant_info["join_time"],
+            Cogv.LEAVE_TIME: participant_info["leave_time"],
+            Cogv.TOTAL_DURATION: participant_info["total_duration"],
+        }
         route = Config.ragic_participants_route()
         return self._send_data(route, payload).json()
