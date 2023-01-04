@@ -15,10 +15,12 @@ def renew_jwt_token(expires: int = 604800) -> str:
     :returns: a new token
     """
     time_now = time()
-    payload = {'aud': None,
-               'iat': time_now,
-               'exp': time_now + expires,
-               'iss': Config.zoom_api_key()}
+    payload = {
+        'aud': None,
+        'iat': time_now,
+        'exp': time_now + expires,
+        'iss': Config.zoom_api_key()
+    }
 
     header = {'alg': 'HS256'}
     api_secret = Config.zoom_api_secret()

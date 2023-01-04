@@ -17,6 +17,7 @@ def process_reports(meeting_id: str, recent: bool) -> None:
     :returns: None
     """
     instances = get_instances(meeting_id, recent)
+    print(instances)
     details = get_details(meeting_id)
     if not (instances and details):
         Logger.warn("Instances not found or ID is invalid.")

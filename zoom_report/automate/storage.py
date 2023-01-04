@@ -92,7 +92,7 @@ def save_report(data: DataFrame, meeting: dict,
     uuid, start_time = instance
     path = generate_filepath(meeting['topic'], uuid, start_time)
     if save_csv(data, path):
-        upload_to_dropbox(path)
+        #upload_to_dropbox(path)
         payload_info = {'uuid': uuid,
                         'start_time': start_time,
                         'topic': meeting['topic'],
