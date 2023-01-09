@@ -11,8 +11,12 @@ class TransferData:
     Use the dropbox library to talk to Dropbox API v2.
     """
 
-    def __init__(self, access_token: str, overwrite: bool = True):
-        self.__access_token = access_token
+    def __init__(
+        self, app_key: str, app_secret: str, refresh_token: str, overwrite: bool = True
+    ):
+        self.app_key = app_key
+        self.app_secret = app_secret
+        self.refresh_token = refresh_token
         self.__overwrite = overwrite
 
     @property
@@ -43,7 +47,12 @@ class TransferData:
         if not source.is_file():
             raise FileNotFoundError("The file to upload does not exist.")
 
-        client = Dropbox(self.__access_token)
+        client = Dropbox(
+            app_key=self.app_key,
+            app_secret=self.app_secret,
+            oauth2_refresh_token=self.refresh_token,
+        )
+
         mode = files.WriteMode.overwrite if self.__overwrite else files.WriteMode.add
 
         with source.open("rb") as file:

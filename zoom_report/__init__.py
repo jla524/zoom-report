@@ -3,7 +3,6 @@ Package wide configurations
 """
 import os
 import sys
-from typing import Optional
 from pathlib import Path
 from threading import Lock
 
@@ -44,7 +43,9 @@ class Config(metaclass=ThreadSafeMeta):
         __logfile_name = f"{__package}-{__version}.log"
         __config = dotenv_values(find_dotenv())
         __env = __config["APP_ENV"]
-        __dropbox_api_key = __config["DROPBOX_API_KEY"]
+        __dropbox_key = __config["DROPBOX_KEY"]
+        __dropbox_secret = __config["DROPBOX_SECRET"]
+        __dropbox_token = __config["DROPBOX_TOKEN"]
         __ragic_api_key = __config["RAGIC_API_KEY"]
         __zoom_api_key = __config["ZOOM_API_KEY"]
         __zoom_api_secret = __config["ZOOM_API_SECRET"]
@@ -96,42 +97,56 @@ class Config(metaclass=ThreadSafeMeta):
         return cls.__logfile_name
 
     @classmethod
-    def env(cls) -> Optional[str]:
+    def env(cls) -> str:
         """
         Getter for config
         """
         return cls.__env
 
     @classmethod
-    def dropbox_api_key(cls) -> Optional[str]:
+    def dropbox_key(cls) -> str:
         """
-        Getter for Dropbox API key
+        Getter for Dropbox key
         """
-        return cls.__dropbox_api_key
+        return cls.__dropbox_key
 
     @classmethod
-    def ragic_api_key(cls) -> Optional[str]:
+    def dropbox_secret(cls) -> str:
+        """
+        Getter for Dropbox secret
+        """
+        return cls.__dropbox_secret
+
+    @classmethod
+    def dropbox_token(cls) -> str:
+        """
+        Getter for Dropbox token
+        """
+        return cls.__dropbox_token
+
+    @classmethod
+    def ragic_api_key(cls) -> str:
         """
         Getter for Ragic API key
         """
         return cls.__ragic_api_key
 
     @classmethod
-    def zoom_api_key(cls) -> Optional[str]:
+    def zoom_api_key(cls) -> str:
         """
         Getter for Zoom API key
         """
         return cls.__zoom_api_key
 
     @classmethod
-    def zoom_api_secret(cls) -> Optional[str]:
+    def zoom_api_secret(cls) -> str:
         """
         Getter for Zoom API secret
         """
         return cls.__zoom_api_secret
 
     @classmethod
-    def zoom_jwt_token(cls) -> Optional[str]:
+    def zoom_jwt_token(cls) -> str:
         """
         Getter for Zoom JWT token
         """

@@ -52,7 +52,9 @@ def upload_to_dropbox(source_file: Path) -> None:
     :returns: None
     """
     Logger.info("Uploading report to DropBox...")
-    transfer = TransferData(str(Config.dropbox_api_key()))
+    transfer = TransferData(
+        Config.dropbox_key(), Config.dropbox_secret(), Config.dropbox_token()
+    )
     target_file = f"{Config.dropbox_storage_dir()}/{source_file.name}"
     transfer.upload_file(source_file, target_file)
     Logger.info("File uploaded to " + str(target_file))
