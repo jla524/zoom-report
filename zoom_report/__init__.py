@@ -1,14 +1,14 @@
 """
 Package wide configurations
 """
+# pylint: disable=R0904
 import os
 import sys
 from pathlib import Path
 from threading import Lock
+from typing import Optional
 
 from dotenv import dotenv_values, find_dotenv, set_key
-
-from typing import Optional
 
 
 class ThreadSafeMeta(type):
