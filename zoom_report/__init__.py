@@ -8,6 +8,8 @@ from threading import Lock
 
 from dotenv import dotenv_values, find_dotenv, set_key
 
+from typing import Optional
+
 
 class ThreadSafeMeta(type):
     """
@@ -97,56 +99,56 @@ class Config(metaclass=ThreadSafeMeta):
         return cls.__logfile_name
 
     @classmethod
-    def env(cls) -> str:
+    def env(cls) -> Optional[str]:
         """
         Getter for config
         """
         return cls.__env
 
     @classmethod
-    def dropbox_key(cls) -> str:
+    def dropbox_key(cls) -> Optional[str]:
         """
         Getter for Dropbox key
         """
         return cls.__dropbox_key
 
     @classmethod
-    def dropbox_secret(cls) -> str:
+    def dropbox_secret(cls) -> Optional[str]:
         """
         Getter for Dropbox secret
         """
         return cls.__dropbox_secret
 
     @classmethod
-    def dropbox_token(cls) -> str:
+    def dropbox_token(cls) -> Optional[str]:
         """
         Getter for Dropbox token
         """
         return cls.__dropbox_token
 
     @classmethod
-    def ragic_api_key(cls) -> str:
+    def ragic_api_key(cls) -> Optional[str]:
         """
         Getter for Ragic API key
         """
         return cls.__ragic_api_key
 
     @classmethod
-    def zoom_api_key(cls) -> str:
+    def zoom_api_key(cls) -> Optional[str]:
         """
         Getter for Zoom API key
         """
         return cls.__zoom_api_key
 
     @classmethod
-    def zoom_api_secret(cls) -> str:
+    def zoom_api_secret(cls) -> Optional[str]:
         """
         Getter for Zoom API secret
         """
         return cls.__zoom_api_secret
 
     @classmethod
-    def zoom_jwt_token(cls) -> str:
+    def zoom_jwt_token(cls) -> Optional[str]:
         """
         Getter for Zoom JWT token
         """
