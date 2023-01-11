@@ -2,6 +2,7 @@
 A wrapper for the Dropbox SDK
 """
 from pathlib import Path
+from typing import Optional
 
 from dropbox import Dropbox, files
 
@@ -12,7 +13,11 @@ class TransferData:
     """
 
     def __init__(
-        self, app_key: str, app_secret: str, refresh_token: str, overwrite: bool = True
+        self,
+        app_key: Optional[str],
+        app_secret: Optional[str],
+        refresh_token: Optional[str],
+        overwrite: bool = True,
     ):
         self.app_key = app_key
         self.app_secret = app_secret
