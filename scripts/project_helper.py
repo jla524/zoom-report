@@ -3,6 +3,7 @@ Define functions as project scripts that can be run via pyproject.toml
 """
 import sys
 import subprocess as sp
+
 from zoom_report import Config
 
 
