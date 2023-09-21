@@ -13,6 +13,8 @@ def encode(client_id, client_secret):
     :param client_secret: Zoom OAuth client secret
     :returns: a base64-encoded string
     """
+    if not client_id or not client_secret:
+        return ""
     data = f"{client_id}:{client_secret}"
     data = data.encode("ascii")
     data = base64.b64encode(data)
