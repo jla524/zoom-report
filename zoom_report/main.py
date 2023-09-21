@@ -25,11 +25,8 @@ def process_reports(meeting_id: str, recent: bool) -> None:
         if len(instance) != 2:
             Logger.error("Expected two elements in instance")
             continue
-        try:
-            report = get_report(instance[0])
-            save_report(report, details, instance)
-        except Exception as error:
-            Logger.error(error)
+        report = get_report(instance[0])
+        save_report(report, details, instance)
 
 
 def run() -> None:

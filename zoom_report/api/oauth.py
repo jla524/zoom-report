@@ -6,15 +6,22 @@ from zoom_report import Config
 from zoom_report.common.enums import Http
 
 
-def encode(client_id, client_secret):
-    s = f"{client_id}:{client_secret}"
-    s = s.encode("ascii") 
-    s = base64.b64encode(s)
-    s = s.decode("ascii")
-    return s
+def encode(client_id: str, client_secret: str) -> str:
+    """
+    Base64-encode client ID and client secret, separated with colon
+    """
+    data = f"{client_id}:{client_secret}"
+    data = data.encode("ascii")
+    data = base64.b64encode(data)
+    data = data.decode("ascii")
+    return data
 
 
-def request_token():
+def request_token() -> str:
+    """
+    Request new access token from Zoom OAuth app
+    :returns: a new access token
+    """
     url = "https://zoom.us/oauth/token"
     encoded = encode(Config.zoom_client_id(), Config.zoom_client_secret())
     headers = {
