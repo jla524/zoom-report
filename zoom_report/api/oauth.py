@@ -1,3 +1,6 @@
+"""
+Define function to request new access and refresh token for Zoom OAuth
+"""
 import base64
 
 import requests
