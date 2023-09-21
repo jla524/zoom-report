@@ -39,7 +39,8 @@ def filter_instances(
     :param days: number of days to filter
     :returns: recent instances
     """
-    Logger.info(f"Filtering meetings that started in the past {days} days...")
+    token = "day" if days == 1 else "days"
+    Logger.info(f"Filtering meetings that started in the past {days} {token}...")
     if instances:
         date_format = Config.datetime_format().split(" ", maxsplit=1)[0]
         start_date = (date.today() - timedelta(days=days)).strftime(date_format)
@@ -62,9 +63,6 @@ def get_instances(meeting_id: str, recent: bool) -> list[tuple[Any, str]]:
     instances = extract_instances(response)
     if recent:
         instances = filter_instances(instances)
-    # older meetings cannot be processed properly
-    else:
-        instances = filter_instances(instances, days=30)
     return instances
 
 
