@@ -6,9 +6,12 @@ from zoom_report import Config
 from zoom_report.common.enums import Http
 
 
-def encode(client_id: str, client_secret: str) -> str:
+def encode(client_id, client_secret):
     """
     Base64-encode client ID and client secret, separated with colon
+    :param client_id: Zoom OAuth client ID
+    :param client_secret: Zoom OAuth client secret
+    :returns: a base64-encoded string
     """
     data = f"{client_id}:{client_secret}"
     data = data.encode("ascii")
