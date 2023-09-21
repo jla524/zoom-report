@@ -6,9 +6,8 @@ from urllib.parse import urljoin
 
 import requests
 
-from zoom_report import Config
 from zoom_report.common.enums import Http
-from zoom_report.api.jwt import renew_jwt_token
+from zoom_report.api.oauth import request_token
 from zoom_report.logger.pkg_logger import Logger
 
 
@@ -19,19 +18,16 @@ class Zoom:
 
     _base_url = "https://api.zoom.us/v2/."
 
+    def __init__(self):
+        self.token = request_token()
+
     def _send_request(self, route, params=None):
         url = urljoin(self._base_url, route)
         Logger.info(f"Sending request to {url}")
-        token = Config.zoom_jwt_token()
-        headers = {"Authorization": f"Bearer {token}"}
+        headers = {"Authorization": f"Bearer {self.token}"}
         response = requests.get(url, headers=headers, params=params)
 
-        if response.status_code == Http.UNAUTHORIZED:
-            Logger.info("The token has expired. Requesting a new token.")
-            new_token = renew_jwt_token()
-            headers = {"Authorization": f"Bearer {new_token}"}
-            response = requests.get(url, headers=headers, params=params)
-        elif response.status_code != Http.OK:
+        if response.status_code != Http.OK:
             Logger.warn("An error has occured when sending request.")
         return response
 

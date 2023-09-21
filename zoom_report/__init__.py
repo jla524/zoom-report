@@ -49,10 +49,9 @@ class Config(metaclass=ThreadSafeMeta):
         __dropbox_secret = __config["DROPBOX_SECRET"]
         __dropbox_token = __config["DROPBOX_TOKEN"]
         __ragic_api_key = __config["RAGIC_API_KEY"]
-        __zoom_api_key = __config["ZOOM_API_KEY"]
-        __zoom_api_secret = __config["ZOOM_API_SECRET"]
-        __zoom_jwt_token_key = "ZOOM_JWT_TOKEN"
-        __zoom_jwt_token = __config[__zoom_jwt_token_key]
+        __zoom_client_id = __config["ZOOM_CLIENT_ID"]
+        __zoom_client_secret = __config["ZOOM_CLIENT_SECRET"]
+        __zoom_refresh_token = __config["ZOOM_REFRESH_TOKEN"]
         __timezone = "America/Vancouver"
         __datetime_format = "%Y-%m-%d %H:%M:%S"
         __config_dir = (
@@ -134,34 +133,34 @@ class Config(metaclass=ThreadSafeMeta):
         return cls.__ragic_api_key
 
     @classmethod
-    def zoom_api_key(cls) -> Optional[str]:
+    def zoom_client_id(cls) -> Optional[str]:
         """
-        Getter for Zoom API key
+        Getter for Zoom client ID
         """
-        return cls.__zoom_api_key
+        return cls.__zoom_client_id
 
     @classmethod
-    def zoom_api_secret(cls) -> Optional[str]:
+    def zoom_client_secret(cls) -> Optional[str]:
         """
-        Getter for Zoom API secret
+        Getter for Zoom client secret
         """
-        return cls.__zoom_api_secret
+        return cls.__zoom_client_secret
 
     @classmethod
-    def zoom_jwt_token(cls) -> Optional[str]:
+    def zoom_refresh_token(cls) -> Optional[str]:
         """
-        Getter for Zoom JWT token
+        Getter for Zoom refresh token
         """
-        return cls.__zoom_jwt_token
+        return cls.__zoom_refresh_token
 
     @classmethod
-    def update_jwt_token(cls, new_token: str) -> None:
+    def update_refresh_token(cls, new_token: str) -> None:
         """
-        Setter for Zoom JWT token
+        Setter for Zoom refresh token
         """
-        if new_token and isinstance(new_token, str):
-            set_key(find_dotenv(), cls.__zoom_jwt_token_key, new_token)
-            cls.__zoom_jwt_token = new_token
+        if new_token:
+            set_key(find_dotenv(), "ZOOM_REFRESH_TOKEN", new_token)
+            cls.__zoom_refresh_token = new_token
 
     @classmethod
     def timezone(cls) -> str:

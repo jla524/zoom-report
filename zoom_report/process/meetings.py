@@ -62,6 +62,9 @@ def get_instances(meeting_id: str, recent: bool) -> list[tuple[Any, str]]:
     instances = extract_instances(response)
     if recent:
         instances = filter_instances(instances)
+    # older meetings cannot be processed properly
+    else:
+        instances = filter_instances(instances, days=30)
     return instances
 
 
