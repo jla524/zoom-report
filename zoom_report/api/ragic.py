@@ -1,10 +1,12 @@
 """
 A wrapper for the Ragic API
 """
+from http import HTTPStatus
+
 import requests
 
 from zoom_report import Config
-from zoom_report.common.enums import Http, Cogv
+from zoom_report.common.enums import Cogv
 from zoom_report.logger.pkg_logger import Logger
 
 
@@ -47,7 +49,7 @@ class Ragic:
         headers = {"Authorization": f"Basic {api_key}"}
 
         response = requests.post(url, data=data, headers=headers)
-        if response.status_code == Http.OK:
+        if response.status_code == HTTPStatus.OK:
             Logger.info(f"Data sent to {url}.")
         return response
 

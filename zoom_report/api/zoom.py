@@ -3,10 +3,10 @@ A wrapper for the Zoom API
 """
 from typing import Optional, Any
 from urllib.parse import urljoin
+from http import HTTPStatus
 
 import requests
 
-from zoom_report.common.enums import Http
 from zoom_report.api.oauth import request_token
 from zoom_report.logger.pkg_logger import Logger
 
@@ -27,7 +27,7 @@ class Zoom:
         headers = {"Authorization": f"Bearer {self.token}"}
         response = requests.get(url, headers=headers, params=params)
 
-        if response.status_code != Http.OK:
+        if response.status_code != HTTPStatus.OK:
             Logger.warn("An error has occured when sending request.")
         return response
 
@@ -67,7 +67,7 @@ class Zoom:
             params.update({"next_page_token": next_page_token})
         response = self._send_request(route, params)
 
-        if response.status_code == Http.NOT_FOUND:
+        if response.status_code == HTTPStatus.NOT_FOUND:
             Logger.error("Unable to retrieve meeting {meeting_uuid}")
             return {}
         return response.json()

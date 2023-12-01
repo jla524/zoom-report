@@ -2,11 +2,11 @@
 Define function to request new access and refresh token for Zoom OAuth
 """
 import base64
+from http import HTTPStatus
 
 import requests
 
 from zoom_report import Config
-from zoom_report.common.enums import Http
 
 
 def encode(client_id, client_secret):
@@ -41,6 +41,6 @@ def request_token() -> str:
         "refresh_token": Config.zoom_refresh_token(),
     }
     response = requests.post(url, headers=headers, data=body)
-    assert response.status_code == Http.OK, response.text
+    assert response.status_code == HTTPStatus.OK, response.text
     Config.update_refresh_token(response.json()["refresh_token"])
     return response.json()["access_token"]

@@ -4,18 +4,6 @@ Enumerations for HTTP response codes and data fields
 # pylint: disable=R0903
 
 
-class Http:
-    """
-    HTTP response codes
-    """
-
-    OK = 200
-    CREATED = 201
-    BAD = 400
-    UNAUTHORIZED = 401
-    NOT_FOUND = 404
-
-
 class Cogv:
     """
     Cogv data fields
