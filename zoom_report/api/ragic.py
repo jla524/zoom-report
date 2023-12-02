@@ -28,9 +28,7 @@ class Ragic:
             return False
 
         for key, value in data.items():
-            if not (
-                isinstance(key, (str, int)) and isinstance(value, (str, int, float))
-            ):
+            if not (isinstance(key, (str, int)) and isinstance(value, (str, int, float))):
                 return False
         return True
 

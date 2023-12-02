@@ -36,10 +36,7 @@ def request_token() -> str:
         "Authorization": "Basic " + encoded,
         "Content-Type": "application/x-www-form-urlencoded",
     }
-    body = {
-        "grant_type": "refresh_token",
-        "refresh_token": Config.zoom_refresh_token(),
-    }
+    body = {"grant_type": "refresh_token", "refresh_token": Config.zoom_refresh_token()}
     response = requests.post(url, headers=headers, data=body)
     assert response.status_code == HTTPStatus.OK, response.text
     Config.update_refresh_token(response.json()["refresh_token"])
