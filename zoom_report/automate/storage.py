@@ -91,11 +91,12 @@ def save_report(data: DataFrame, meeting: dict, instance: tuple[str, str]) -> No
     uuid, start_time = instance
     path = generate_filepath(meeting["topic"], uuid, start_time)
     if save_csv(data, path):
-        upload_to_dropbox(path)
         payload_info = {
             "uuid": uuid,
             "start_time": start_time,
             "topic": meeting["topic"],
             "meeting_id": meeting["id"],
         }
+        # TODO: remove CSV file from storage if this write fails
         write_to_ragic(data, payload_info)
+        upload_to_dropbox(path)
