@@ -85,7 +85,7 @@ def save_report(data: DataFrame, meeting: dict, instance: tuple[str, str]) -> bo
     :returns: True if report is saved and False otherwise
     """
     if data.empty:
-        Logger.warn("Nothing to write, DataFrame is empty.")
+        Logger.warn("Nothing to save, DataFrame is empty.")
         return False
     uuid, start_time = instance
     path = generate_filepath(meeting["topic"], uuid, start_time)
@@ -102,4 +102,5 @@ def save_report(data: DataFrame, meeting: dict, instance: tuple[str, str]) -> bo
         return False
     save_csv(data, path)
     upload_to_dropbox(path)
+    Logger.info("Report has been saved in storage.")
     return True
