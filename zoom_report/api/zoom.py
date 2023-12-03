@@ -18,13 +18,15 @@ class Zoom:
     Use the requests library to talk to the Zoom API
     """
 
-    _base_url = "https://api.zoom.us/v2/."
+    __base_url = "https://api.zoom.us/v2/."
 
     def __init__(self):
         self.token = request_token()
 
-    def _send_request(self, route: str, params: Optional[JSON] = None, timeout: int = 10) -> JSON:
-        url = urljoin(self._base_url, route)
+    def __send_request(
+        self, route: str, params: Optional[JSON] = None, timeout: int = 10
+    ) -> requests.Response:
+        url = urljoin(self.__base_url, route)
         Logger.info(f"Sending request to {url}")
         headers = {"Authorization": f"Bearer {self.token}"}
         response = requests.get(url, headers=headers, params=params, timeout=timeout)
@@ -40,7 +42,7 @@ class Zoom:
         """
         Logger.info("Retrieving meeting instances...")
         route = f"past_meetings/{meeting_id}/instances"
-        return self._send_request(route).json()
+        return self.__send_request(route).json()
 
     def get_meeting_details(self, meeting_id: str) -> dict:
         """
@@ -50,7 +52,7 @@ class Zoom:
         """
         Logger.info("Retrieving meeting details...")
         route = f"meetings/{meeting_id}"
-        return self._send_request(route).json()
+        return self.__send_request(route).json()
 
     def get_participants(self, meeting_uuid: str, next_page_token: Optional[str] = None) -> JSON:
         """
@@ -64,7 +66,7 @@ class Zoom:
 
         if next_page_token:
             params.update({"next_page_token": next_page_token})
-        response = self._send_request(route, params)
+        response = self.__send_request(route, params)
         if response.status_code == HTTPStatus.NOT_FOUND:
             Logger.error("Unable to retrieve meeting {meeting_uuid}")
             return {}

@@ -49,7 +49,7 @@ def filter_instances(instances: list[tuple[Any, str]], days: int = 1) -> list[tu
     return instances
 
 
-def get_instances(meeting_id: str, filter_by_days: Optional[bool] = None) -> list[tuple[Any, str]]:
+def get_instances(meeting_id: str, filter_by_days: Optional[int] = None) -> list[tuple[Any, str]]:
     """
     Get meeting instances from Zoom with UUID and localized start time.
     :param meeting_id: a meeting ID to process

@@ -18,7 +18,7 @@ class Ragic:
     Use the requests library to talk to the Ragic API
     """
 
-    _base_url = "https://na3.ragic.com"
+    __base_url = "https://na3.ragic.com"
 
     @staticmethod
     def validate_data(data: JSON) -> bool:
@@ -34,7 +34,7 @@ class Ragic:
                 return False
         return True
 
-    def _send_data(self, api_route: str, data: JSON, timeout: int = 10) -> JSON:
+    def __send_data(self, api_route: str, data: JSON, timeout: int = 10) -> requests.Response:
         """
         Send data to the specified API route.
         :param api_route: an API route in Ragic
@@ -44,7 +44,7 @@ class Ragic:
         if not self.validate_data(data):
             raise TypeError("Payload type check failed.")
 
-        url = f"{self._base_url}/{api_route}"
+        url = f"{self.__base_url}/{api_route}"
         api_key = Config.ragic_api_key()
         headers = {"Authorization": f"Basic {api_key}"}
         response = requests.post(url, data=data, headers=headers, timeout=timeout)
@@ -65,7 +65,7 @@ class Ragic:
             Cogv.MEETING_ID: attendance_info["meeting_id"],
         }
         route = Config.ragic_attendance_route()
-        return self._send_data(route, payload).json()
+        return self.__send_data(route, payload).json()
 
     def write_participants(self, uuid: str, participant_info: JSON) -> JSON:
         """
@@ -83,4 +83,4 @@ class Ragic:
             Cogv.TOTAL_DURATION: participant_info["total_duration"],
         }
         route = Config.ragic_participants_route()
-        return self._send_data(route, payload)
+        return self.__send_data(route, payload).json()

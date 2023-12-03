@@ -51,14 +51,11 @@ class TransferData:
         """
         if not source.is_file():
             raise FileNotFoundError("The file to upload does not exist.")
-
         client = Dropbox(
             app_key=self.app_key,
             app_secret=self.app_secret,
             oauth2_refresh_token=self.refresh_token,
         )
-
         mode = files.WriteMode.overwrite if self.__overwrite else files.WriteMode.add
-
         with source.open("rb") as file:
             client.files_upload(file.read(), target, mode=mode)
