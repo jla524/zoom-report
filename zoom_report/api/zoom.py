@@ -10,6 +10,8 @@ import requests
 from zoom_report.api.oauth import request_token
 from zoom_report.logger.pkg_logger import Logger
 
+JSON = dict[str, Any]
+
 
 class Zoom:
     """
@@ -21,12 +23,11 @@ class Zoom:
     def __init__(self):
         self.token = request_token()
 
-    def _send_request(self, route, params=None):
+    def _send_request(self, route: str, params: Optional[JSON] = None, timeout: int = 10) -> JSON:
         url = urljoin(self._base_url, route)
         Logger.info(f"Sending request to {url}")
         headers = {"Authorization": f"Bearer {self.token}"}
-        response = requests.get(url, headers=headers, params=params)
-
+        response = requests.get(url, headers=headers, params=params, timeout=timeout)
         if response.status_code != HTTPStatus.OK:
             Logger.warn("An error has occured when sending request.")
         return response
@@ -51,9 +52,7 @@ class Zoom:
         route = f"meetings/{meeting_id}"
         return self._send_request(route).json()
 
-    def get_participants(
-        self, meeting_uuid: str, next_page_token: Optional[str] = None
-    ) -> dict[str, Any]:
+    def get_participants(self, meeting_uuid: str, next_page_token: Optional[str] = None) -> JSON:
         """
         Retrieve all meeting participants of a given meeting ID
         :params meeting_id: a meeting ID to retrieve
@@ -66,7 +65,6 @@ class Zoom:
         if next_page_token:
             params.update({"next_page_token": next_page_token})
         response = self._send_request(route, params)
-
         if response.status_code == HTTPStatus.NOT_FOUND:
             Logger.error("Unable to retrieve meeting {meeting_uuid}")
             return {}

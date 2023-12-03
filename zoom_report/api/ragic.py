@@ -2,12 +2,15 @@
 A wrapper for the Ragic API
 """
 from http import HTTPStatus
+from typing import Any
 
 import requests
 
 from zoom_report import Config
 from zoom_report.common.enums import Cogv
 from zoom_report.logger.pkg_logger import Logger
+
+JSON = dict[str, Any]
 
 
 class Ragic:
@@ -18,7 +21,7 @@ class Ragic:
     _base_url = "https://na3.ragic.com"
 
     @staticmethod
-    def validate_data(data: dict) -> bool:
+    def validate_data(data: JSON) -> bool:
         """
         Ensure the payload data is in the proper format.
         :param data: a dict with payload data to validate
@@ -26,13 +29,12 @@ class Ragic:
         """
         if not isinstance(data, dict):
             return False
-
         for key, value in data.items():
             if not (isinstance(key, (str, int)) and isinstance(value, (str, int, float))):
                 return False
         return True
 
-    def _send_data(self, api_route: str, data: dict) -> requests.Response:
+    def _send_data(self, api_route: str, data: JSON, timeout: int = 10) -> JSON:
         """
         Send data to the specified API route.
         :param api_route: an API route in Ragic
@@ -45,13 +47,12 @@ class Ragic:
         url = f"{self._base_url}/{api_route}"
         api_key = Config.ragic_api_key()
         headers = {"Authorization": f"Basic {api_key}"}
-
-        response = requests.post(url, data=data, headers=headers)
+        response = requests.post(url, data=data, headers=headers, timeout=timeout)
         if response.status_code == HTTPStatus.OK:
             Logger.info(f"Data sent to {url}.")
         return response
 
-    def write_attendance(self, attendance_info: dict) -> dict:
+    def write_attendance(self, attendance_info: JSON) -> JSON:
         """
         Write attendance data to Ragic.
         :param attendance_info: attendance info from Zoom
@@ -66,7 +67,7 @@ class Ragic:
         route = Config.ragic_attendance_route()
         return self._send_data(route, payload).json()
 
-    def write_participants(self, uuid: str, participant_info: dict) -> dict:
+    def write_participants(self, uuid: str, participant_info: JSON) -> JSON:
         """
         Write participants data to Ragic.
         :param uuid: a UUID of the meeting
@@ -82,4 +83,4 @@ class Ragic:
             Cogv.TOTAL_DURATION: participant_info["total_duration"],
         }
         route = Config.ragic_participants_route()
-        return self._send_data(route, payload).json()
+        return self._send_data(route, payload)

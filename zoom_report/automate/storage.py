@@ -88,7 +88,7 @@ def save_report(data: DataFrame, meeting: dict, instance: tuple[str, str]) -> No
         return
     uuid, start_time = instance
     path = generate_filepath(meeting["topic"], uuid, start_time)
-    if file_path.exists():
+    if path.exists():
         Logger.info("File already exists in storage.")
         return
     payload_info = {
@@ -98,5 +98,5 @@ def save_report(data: DataFrame, meeting: dict, instance: tuple[str, str]) -> No
         "meeting_id": meeting["id"],
     }
     if write_to_ragic(data, payload_info):
-        save_csv(data, path):
+        save_csv(data, path)
         upload_to_dropbox(path)
