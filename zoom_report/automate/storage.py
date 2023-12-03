@@ -80,7 +80,7 @@ def write_to_ragic(frame: DataFrame, meeting_info: JSON) -> bool:
 
 
 def save_report(
-    meeting_id: int, attendance: DataFrame, meeting_info: JSON, instance_info: tuple[str, str]
+    meeting_id: str, attendance: DataFrame, meeting_info: JSON, instance_info: tuple[str, str]
 ) -> bool:
     """
     Write attendance report into storage.
