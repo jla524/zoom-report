@@ -30,19 +30,15 @@ def generate_filepath(topic: str, uuid: str, start_time: str) -> Path:
     return output_file
 
 
-def save_csv(data: DataFrame, file_path: Path) -> bool:
+def save_csv(frame: DataFrame, file_path: Path) -> None:
     """
     Save a given DataFrame as a CSV file.
-    :param data: a DataFrame to save
-    :returns: True if no existing file is found and False otherwise
+    :param frame: a DataFrame to save as CSV
+    :returns: None
     """
     Logger.info("Saving report as CSV...")
-    if file_path.exists():
-        Logger.info("File already exists in storage.")
-        return False
-    data.to_csv(file_path, index=False)
+    frame.to_csv(file_path, index=False)
     Logger.info("Report saved in " + str(file_path))
-    return True
 
 
 def upload_to_dropbox(source_file: Path) -> None:
@@ -58,24 +54,26 @@ def upload_to_dropbox(source_file: Path) -> None:
     Logger.info("File uploaded to " + str(target_file))
 
 
-def write_to_ragic(frame: DataFrame, meeting_info: dict) -> None:
+def write_to_ragic(frame: DataFrame, meeting_info: dict) -> bool:
     """
     Write a given attendance report to a pre-configured route in Ragic.
     :param frame: a DataFrame with attendance data to write
     :param meeting_info: relevant info for a meeting
-    :returns: None
+    :returns: True if data is written successfully and False otherwise
     """
     Logger.info("Writing records to Ragic...")
     response = Ragic().write_attendance(meeting_info)
     if response["status"] == "INVALID":
         Logger.warn("An error occurred when writing to attendance.")
         Logger.error(response["msg"])
-        return
+        return False
     for _, row in frame.iterrows():
         response = Ragic().write_participants(meeting_info["uuid"], row)
         if response["status"] == "INVALID":
             Logger.warn("An error occured when writing to participants.")
             Logger.error(response["msg"])
+            return False
+    return True
 
 
 def save_report(data: DataFrame, meeting: dict, instance: tuple[str, str]) -> None:
@@ -86,17 +84,19 @@ def save_report(data: DataFrame, meeting: dict, instance: tuple[str, str]) -> No
     :param instance: instance info fromr Zoom
     """
     if data.empty:
-        Logger.warn("Nothing to write, DataFrame is empty")
+        Logger.warn("Nothing to write, DataFrame is empty.")
         return
     uuid, start_time = instance
     path = generate_filepath(meeting["topic"], uuid, start_time)
-    if save_csv(data, path):
-        payload_info = {
-            "uuid": uuid,
-            "start_time": start_time,
-            "topic": meeting["topic"],
-            "meeting_id": meeting["id"],
-        }
-        # TODO: remove CSV file from storage if this write fails
-        write_to_ragic(data, payload_info)
+    if file_path.exists():
+        Logger.info("File already exists in storage.")
+        return
+    payload_info = {
+        "uuid": uuid,
+        "start_time": start_time,
+        "topic": meeting["topic"],
+        "meeting_id": meeting["id"],
+    }
+    if write_to_ragic(data, payload_info):
+        save_csv(data, path):
         upload_to_dropbox(path)
