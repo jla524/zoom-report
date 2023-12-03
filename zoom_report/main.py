@@ -30,7 +30,7 @@ def process_reports(meeting_id: str, n_days: int) -> bool:
             Logger.error("Expected two elements in instance.")
             continue
         report = get_report(instance[0])
-        if save_report(meeting_id, report, details, instance):
+        if save_report(meeting_id, instance, details, report):
             saved = True
     return saved
 
