@@ -2,7 +2,6 @@
 The main program to fetch and store attendance reports
 """
 import sys
-from typing import Optional
 
 from zoom_report import Config
 from zoom_report.command_line import Cli
@@ -12,13 +11,14 @@ from zoom_report.automate.storage import save_report
 from zoom_report.logger.pkg_logger import Logger
 
 
-def process_reports(meeting_id: str, n_days: Optional[int]) -> bool:
+def process_reports(meeting_id: str, n_days: int) -> bool:
     """
     Write meeting instances for a given meeting ID to storage.
     :param meeting_id: a meeting ID to process
     :param n_days: number of days from today to filter on
     :returns: True if at least one report is saved and False otherwise
     """
+    assert n_days <= 365, "Cannot retrieve data more than a year ago."
     instances = get_instances(meeting_id, n_days)
     details = get_details(meeting_id)
     if not instances or not details:
@@ -27,7 +27,7 @@ def process_reports(meeting_id: str, n_days: Optional[int]) -> bool:
     saved = False
     for instance in instances:
         if len(instance) != 2:
-            Logger.error("Expected two elements in instance")
+            Logger.error("Expected two elements in instance.")
             continue
         report = get_report(instance[0])
         if save_report(report, details, instance):
@@ -43,7 +43,7 @@ def run() -> None:
     cli = Cli()
     days = 5 if cli.args.backfill else 1 if cli.args.recent else 365
     if cli.args.meeting is not None:
-        Logger.info(f"Processing meeting ID {cli.args.meeting}")
+        Logger.info(f"Processing meeting ID {cli.args.meeting}.")
         report_saved = process_reports(cli.args.meeting, days)
     if cli.args.all:
         Logger.info("Processing stored meeting IDs...")

@@ -1,7 +1,7 @@
 """
 Process meeting instances and details from Zoom
 """
-from typing import Any, Optional
+from typing import Any
 from datetime import date, timedelta
 
 from zoom_report import Config
@@ -30,7 +30,7 @@ def extract_instances(info: dict) -> list[tuple[Any, str]]:
     return instances
 
 
-def filter_instances(instances: list[tuple[Any, str]], days: int = 1) -> list[tuple[Any, str]]:
+def filter_instances(instances: list[tuple[Any, str]], days: int = 365) -> list[tuple[Any, str]]:
     """
     Filter meeting instances that started in the past n days.
     :param instances: a list of instances to filter
@@ -45,11 +45,11 @@ def filter_instances(instances: list[tuple[Any, str]], days: int = 1) -> list[tu
         index = len(instances) - 1
         while instances[index][1] > start_date:
             index -= 1
-        instances = instances[index + 1 :]
+        instances = instances[index+1:]
     return instances
 
 
-def get_instances(meeting_id: str, filter_by_days: Optional[int] = None) -> list[tuple[Any, str]]:
+def get_instances(meeting_id: str, filter_days: int) -> list[tuple[Any, str]]:
     """
     Get meeting instances from Zoom with UUID and localized start time.
     :param meeting_id: a meeting ID to process
@@ -59,8 +59,7 @@ def get_instances(meeting_id: str, filter_by_days: Optional[int] = None) -> list
     Logger.info("Retrieving meeting instances...")
     response = Zoom().get_meeting_instances(meeting_id)
     instances = extract_instances(response)
-    if filter_by_days:
-        instances = filter_instances(instances, filter_by_days)
+    instances = filter_instances(instances, filter_days)
     return instances
 
 
