@@ -34,8 +34,8 @@ def filter_instances(instances: list[Instance], days: int = 365) -> list[Instanc
     :param days: number of days to filter
     :returns: recent instances
     """
-    token = "day" if days == 1 else "days"
-    Logger.info(f"Filtering meetings that started in the past {days} {token}...")
+    text = "day" if days == 1 else f"{days} days"
+    Logger.info(f"Filtering meetings that started in the past {text}...")
     if instances:
         date_format = Config.datetime_format().split(" ", maxsplit=1)[0]
         start_date = (date.today() - timedelta(days=days)).strftime(date_format)
