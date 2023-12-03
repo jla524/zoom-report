@@ -63,7 +63,6 @@ class Zoom:
         Logger.info("Retrieving meeting participants...")
         route = f"report/meetings/{meeting_uuid}/participants"
         params = {"page_size": "300"}
-
         if next_page_token:
             params.update({"next_page_token": next_page_token})
         response = self.__send_request(route, params)

@@ -19,13 +19,11 @@ def extract_instances(info: dict) -> list[tuple[Any, str]]:
     Logger.info("Extracting meeting UUIDs and local start times...")
     if not info or "meetings" not in info:
         return []
-
     instances = []
     for meeting in info["meetings"]:
         if "uuid" in meeting and "start_time" in meeting:
             instance = (meeting["uuid"], localize(meeting["start_time"]))
             instances.append(instance)
-
     instances = sorted(instances, key=lambda x: x[1])
     return instances
 
