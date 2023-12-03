@@ -41,7 +41,7 @@ def run() -> None:
     :returns: None
     """
     cli = Cli()
-    days = 5 if cli.args.backfill else 1 if cli.args.recent else None
+    days = 5 if cli.args.backfill else 1 if cli.args.recent else 365
     if cli.args.meeting is not None:
         Logger.info(f"Processing meeting ID {cli.args.meeting}")
         report_saved = process_reports(cli.args.meeting, days)
@@ -51,7 +51,7 @@ def run() -> None:
         with Config.meeting_id_file().open("r") as file:
             meeting_ids = file.read().splitlines()
         for meeting_id in meeting_ids:
-            if process_reports(meeting_id, cli.args.recent):
+            if process_reports(meeting_id, days):
                 report_saved = True
     if not report_saved:
         sys.exit(1)
