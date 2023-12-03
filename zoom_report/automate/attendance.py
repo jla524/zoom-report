@@ -4,28 +4,12 @@ Retrieve Zoom attendance data
 import pandas as pd
 
 from zoom_report import Config
-from zoom_report.api.zoom import Zoom
-from zoom_report.common.helpers import encode_uuid
 from zoom_report.logger.pkg_logger import Logger
+from zoom_report.common.helpers import JSON, encode_uuid
+from zoom_report.process.meetings import get_info
 
 
-def get_info(uuid: str) -> list[dict]:
-    """
-    Get an attendance info for a given UUID.
-    :param uuid: a meeting UUID to retrieve info from
-    :returns: participants info
-    """
-    Logger.info("Retrieving attendance info...")
-    zoom = Zoom()
-    response = zoom.get_participants(uuid)
-    participants = response["participants"]
-    while token := response.get("next_page_token"):
-        response = zoom.get_participants(uuid, next_page_token=token)
-        participants += response["participants"]
-    return participants
-
-
-def to_frame(info: list[dict]) -> pd.DataFrame:
+def convert_to_frame(info: list[JSON]) -> pd.DataFrame:
     """
     Convert participants info to DataFrame format with localized timestamps.
     :param info: participants info from Zoom
@@ -70,8 +54,8 @@ def get_report(uuid: str) -> pd.DataFrame:
     """
     attendance = get_info(encode_uuid(uuid))
     if not attendance:
-        Logger.info(f"Unable to retrieve {uuid}")
+        Logger.info(f"Unable to retrieve meeting with UUID {uuid}.")
         return pd.DataFrame()
-    attendance = to_frame(attendance)
+    attendance = convert_to_frame(attendance)
     attendance = combine_rejoins(attendance)
     return attendance

@@ -60,6 +60,22 @@ def get_instances(meeting_id: str, filter_days: int) -> list[Instance]:
     return instances
 
 
+def get_info(uuid: str) -> list[JSON]:
+    """
+    Get an attendance info for a given UUID.
+    :param uuid: a meeting UUID to retrieve info from
+    :returns: participants info
+    """
+    Logger.info("Retrieving attendance info...")
+    zoom = Zoom()
+    response = zoom.get_participants(uuid)
+    participants = response["participants"]
+    while token := response.get("next_page_token"):
+        response = zoom.get_participants(uuid, next_page_token=token)
+        participants += response["participants"]
+    return participants
+
+
 def get_details(meeting_id: str) -> JSON:
     """
     Get meeting details from Zoom.

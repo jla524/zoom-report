@@ -25,12 +25,11 @@ def process_reports(meeting_id: str, n_days: int) -> bool:
         Logger.warn("Instances not found or ID is invalid.")
         return False
     saved = False
-    for instance in instances:
-        if len(instance) != 2:
-            Logger.error("Expected two elements in instance.")
-            continue
-        report = get_report(instance[0])
-        if save_report(meeting_id, instance, details, report):
+    for (uuid, start_time) in instances:
+        report = get_report(uuid)
+        details["uuid"] = uuid
+        details["start_time"] = start_time
+        if save_report(meeting_id, details, report):
             saved = True
     return saved
 
