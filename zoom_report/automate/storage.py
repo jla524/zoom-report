@@ -2,6 +2,7 @@
 Write attendance data to storage
 """
 from pathlib import Path
+from typing import Any
 
 from pandas import DataFrame
 
@@ -9,6 +10,8 @@ from zoom_report import Config
 from zoom_report.api.ragic import Ragic
 from zoom_report.sdk.transfer_data import TransferData
 from zoom_report.logger.pkg_logger import Logger
+
+JSON = dict[str, Any]
 
 
 def generate_filepath(topic: str, uuid: str, start_time: str) -> Path:
@@ -54,7 +57,7 @@ def upload_to_dropbox(source_file: Path) -> None:
     Logger.info("File uploaded to " + str(target_file))
 
 
-def write_to_ragic(frame: DataFrame, meeting_info: dict) -> bool:
+def write_to_ragic(frame: DataFrame, meeting_info: JSON) -> bool:
     """
     Write a given attendance report to a pre-configured route in Ragic.
     :param frame: a DataFrame with attendance data to write
@@ -76,31 +79,33 @@ def write_to_ragic(frame: DataFrame, meeting_info: dict) -> bool:
     return True
 
 
-def save_report(data: DataFrame, meeting: dict, instance: tuple[str, str]) -> bool:
+def save_report(
+    meeting_id: int, attendance: DataFrame, meeting_info: JSON, instance_info: tuple[str, str]
+) -> bool:
     """
     Write attendance report into storage.
-    :param data: a DataFrame with attendance data to write
-    :param meeting: meeting info from Zoom
-    :param instance: instance info fromr Zoom
+    :param attendance: a DataFrame with attendance data to write
+    :param meeting_info: meeting info from Zoom
+    :param instance_info: instance info from Zoom
     :returns: True if report is saved and False otherwise
     """
-    if data.empty:
+    if attendance.empty:
         Logger.warn("Nothing to save, DataFrame is empty.")
         return False
-    uuid, start_time = instance
-    path = generate_filepath(meeting["topic"], uuid, start_time)
+    uuid, start_time = instance_info
+    path = generate_filepath(meeting_info["topic"], uuid, start_time)
     if path.exists():
         Logger.info("File already exists in storage.")
         return False
     payload_info = {
         "uuid": uuid,
         "start_time": start_time,
-        "topic": meeting["topic"],
-        "meeting_id": meeting["id"],
+        "topic": meeting_info["topic"],
+        "meeting_id": meeting_id,
     }
-    if not write_to_ragic(data, payload_info):
+    if not write_to_ragic(attendance, payload_info):
         return False
-    save_csv(data, path)
+    save_csv(attendance, path)
     upload_to_dropbox(path)
     Logger.info("Report has been saved in storage.")
     return True
