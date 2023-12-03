@@ -2,15 +2,13 @@
 A wrapper for the Ragic API
 """
 from http import HTTPStatus
-from typing import Any
 
 import requests
 
 from zoom_report import Config
 from zoom_report.common.enums import Cogv
+from zoom_report.common.helpers import JSON
 from zoom_report.logger.pkg_logger import Logger
-
-JSON = dict[str, Any]
 
 
 class Ragic:

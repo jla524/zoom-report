@@ -1,16 +1,15 @@
 """
 Process meeting instances and details from Zoom
 """
-from typing import Any
 from datetime import date, timedelta
 
 from zoom_report import Config
-from zoom_report.common.helpers import localize
-from zoom_report.api.zoom import Zoom
 from zoom_report.logger.pkg_logger import Logger
+from zoom_report.common.helpers import JSON, Instance, localize
+from zoom_report.api.zoom import Zoom
 
 
-def extract_instances(info: dict) -> list[tuple[Any, str]]:
+def extract_instances(info: dict) -> list[Instance]:
     """
     Convert meeting instances to a sorted list with UUID and local start time.
     :param instances: instances to convert
@@ -28,7 +27,7 @@ def extract_instances(info: dict) -> list[tuple[Any, str]]:
     return instances
 
 
-def filter_instances(instances: list[tuple[Any, str]], days: int = 365) -> list[tuple[Any, str]]:
+def filter_instances(instances: list[Instance], days: int = 365) -> list[Instance]:
     """
     Filter meeting instances that started in the past n days.
     :param instances: a list of instances to filter
@@ -47,7 +46,7 @@ def filter_instances(instances: list[tuple[Any, str]], days: int = 365) -> list[
     return instances
 
 
-def get_instances(meeting_id: str, filter_days: int) -> list[tuple[Any, str]]:
+def get_instances(meeting_id: str, filter_days: int) -> list[Instance]:
     """
     Get meeting instances from Zoom with UUID and localized start time.
     :param meeting_id: a meeting ID to process
@@ -61,7 +60,7 @@ def get_instances(meeting_id: str, filter_days: int) -> list[tuple[Any, str]]:
     return instances
 
 
-def get_details(meeting_id: str) -> dict[str, Any]:
+def get_details(meeting_id: str) -> JSON:
     """
     Get meeting details from Zoom.
     :param meeting_id: a meeting ID to process

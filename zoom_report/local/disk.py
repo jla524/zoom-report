@@ -2,7 +2,7 @@ from path import Path
 
 import pandas as pd
 
-from zoom_report import config
+from zoom_report import Config
 from zoom_report.logger.pkg_logger import Logger
 
 
@@ -25,7 +25,7 @@ def generate_filepath(topic: str, uuid: str, start_time: str) -> Path:
     return output_file
 
 
-def save_to_disk(frame: DataFrame, file_path: Path) -> None:
+def save_to_disk(frame: pd.DataFrame, file_path: Path) -> None:
     """
     Save a given DataFrame as a CSV file.
     :param frame: a DataFrame to save as CSV

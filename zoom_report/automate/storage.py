@@ -2,17 +2,16 @@
 Write attendance data to storage
 """
 from pathlib import Path
-from typing import Any
 
-from pandas import DataFrame
+import pandas as pd
 
 from zoom_report import Config
+from zoom_report.logger.pkg_logger import Logger
+from zoom_report.common.helpers import JSON, Instance
 from zoom_report.api.ragic import Ragic
 from zoom_report.sdk.transfer_data import TransferData
 from zoom_report.local.disk import generate_filepath, save_to_disk
-from zoom_report.logger.pkg_logger import Logger
 
-JSON = dict[str, Any]
 
 def upload_to_dropbox(source_file: Path) -> None:
     """
@@ -27,7 +26,7 @@ def upload_to_dropbox(source_file: Path) -> None:
     Logger.info("File uploaded to " + str(target_file))
 
 
-def write_to_ragic(frame: DataFrame, meeting_info: JSON) -> bool:
+def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON) -> bool:
     """
     Write a given attendance report to a pre-configured route in Ragic.
     :param frame: a DataFrame with attendance data to write
@@ -50,13 +49,13 @@ def write_to_ragic(frame: DataFrame, meeting_info: JSON) -> bool:
 
 
 def save_report(
-    meeting_id: str, attendance: DataFrame, meeting_info: JSON, instance_info: tuple[str, str]
+    meeting_id: str, instance_info: Instance, meeting_info: JSON, attendance: pd.DataFrame
 ) -> bool:
     """
     Write attendance report into storage.
-    :param attendance: a DataFrame with attendance data to write
-    :param meeting_info: meeting info from Zoom
     :param instance_info: instance info from Zoom
+    :param meeting_info: meeting info from Zoom
+    :param attendance: a DataFrame with attendance data to write
     :returns: True if report is saved and False otherwise
     """
     if attendance.empty:

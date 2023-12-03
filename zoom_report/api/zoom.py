@@ -1,16 +1,15 @@
 """
 A wrapper for the Zoom API
 """
-from typing import Optional, Any
+from typing import Optional
 from urllib.parse import urljoin
 from http import HTTPStatus
 
 import requests
 
+from zoom_report.common.helpers import JSON
 from zoom_report.api.oauth import request_token
 from zoom_report.logger.pkg_logger import Logger
-
-JSON = dict[str, Any]
 
 
 class Zoom:

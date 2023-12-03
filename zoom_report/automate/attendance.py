@@ -1,7 +1,7 @@
 """
 Retrieve Zoom attendance data
 """
-from pandas import DataFrame, to_datetime
+import pandas as pd
 
 from zoom_report import Config
 from zoom_report.api.zoom import Zoom
@@ -25,17 +25,17 @@ def get_info(uuid: str) -> list[dict]:
     return participants
 
 
-def to_frame(info: list[dict]) -> DataFrame:
+def to_frame(info: list[dict]) -> pd.DataFrame:
     """
     Convert participants info to DataFrame format with localized timestamps.
     :param info: participants info from Zoom
     :returns: participants DataFrame with localized timestamps
     """
     Logger.info("Converting attendance info to DataFrame...")
-    frame = DataFrame(info)
+    frame = pd.DataFrame(info)
     for column in ["join_time", "leave_time"]:
         frame[column] = (
-            to_datetime(frame[column])
+            pd.to_datetime(frame[column])
             .dt.tz_convert(Config.timezone())
             .dt.strftime(Config.datetime_format())
         )
@@ -44,7 +44,7 @@ def to_frame(info: list[dict]) -> DataFrame:
     return frame
 
 
-def combine_rejoins(frame: DataFrame) -> DataFrame:
+def combine_rejoins(frame: pd.DataFrame) -> pd.DataFrame:
     """
     Combine participants info when a duplicate is found.
     :param frame: participants DataFrame
@@ -62,7 +62,7 @@ def combine_rejoins(frame: DataFrame) -> DataFrame:
     return frame
 
 
-def get_report(uuid: str) -> DataFrame:
+def get_report(uuid: str) -> pd.DataFrame:
     """
     Retrieve an attendance report for a given UUID.
     :param uuid: a meeting UUID to retrieve info from
@@ -71,7 +71,7 @@ def get_report(uuid: str) -> DataFrame:
     attendance = get_info(encode_uuid(uuid))
     if not attendance:
         Logger.info(f"Unable to retrieve {uuid}")
-        return DataFrame()
+        return pd.DataFrame()
     attendance = to_frame(attendance)
     attendance = combine_rejoins(attendance)
     return attendance
