@@ -53,7 +53,6 @@ def get_instances(meeting_id: str, filter_days: int) -> list[Instance]:
     :param recent: get recent meetings only
     :returns: meeting instances
     """
-    Logger.info("Retrieving meeting instances...")
     response = Zoom().get_meeting_instances(meeting_id)
     instances = extract_instances(response)
     instances = filter_instances(instances, filter_days)
@@ -66,7 +65,6 @@ def get_info(uuid: str) -> list[JSON]:
     :param uuid: a meeting UUID to retrieve info from
     :returns: participants info
     """
-    Logger.info("Retrieving attendance info...")
     zoom = Zoom()
     response = zoom.get_participants(uuid)
     participants = response["participants"]
@@ -82,7 +80,6 @@ def get_details(meeting_id: str) -> JSON:
     :param meeting_id: a meeting ID to process
     :returns: meeting details
     """
-    Logger.info("Retrieving meeting details...")
     response = Zoom().get_meeting_details(meeting_id)
     if "code" in response:
         Logger.warn("An error occured when retrieving meeting details.")
