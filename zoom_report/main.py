@@ -53,4 +53,5 @@ def run() -> None:
             if process_reports(meeting_id, days):
                 report_saved = True
     if not report_saved:
+        Logger.error("No records were written.")
         sys.exit(1)
