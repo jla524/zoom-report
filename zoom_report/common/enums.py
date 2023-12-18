@@ -1,5 +1,5 @@
 """
-Enumerations for HTTP response codes and data fields
+Enumerations for data fields
 """
 # pylint: disable=R0903
 
