@@ -1,7 +1,7 @@
 """
 Ensure the helper functions are working properly
 """
-from zoom_report.common.helpers import encode_uuid, localize
+from zoom_report.common.helpers import encode_uuid
 
 
 def test_encode_uuid() -> None:

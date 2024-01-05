@@ -2,12 +2,7 @@
 Helper functions
 """
 from typing import Any
-from datetime import datetime
 from urllib.parse import quote_plus
-
-import pytz
-
-from zoom_report import Config
 
 JSON = dict[str, Any]
 Instance = tuple[str, str]
