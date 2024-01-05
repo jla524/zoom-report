@@ -15,12 +15,3 @@ def test_encode_uuid() -> None:
     }
     for uuid, encoded in uuids.items():
         assert encode_uuid(uuid) == encoded
-
-
-def test_localize() -> None:
-    """
-    Test to see if localize converts to local time correctly
-    """
-    utc_time = "1994-11-05T13:15:30Z"
-    localized_time = ["1994-11-05 04:15:30", "1994-11-05 05:15:30"]
-    assert localize(utc_time) in localized_time

@@ -5,7 +5,7 @@ from datetime import date, timedelta
 
 from zoom_report import Config
 from zoom_report.logger.pkg_logger import Logger
-from zoom_report.common.helpers import JSON, Instance, localize
+from zoom_report.common.helpers import JSON, Instance
 from zoom_report.api.zoom import Zoom
 
 
@@ -13,7 +13,7 @@ def extract_instances(info: dict) -> list[Instance]:
     """
     Convert meeting instances to a sorted list with UUID and local start time.
     :param instances: instances to convert
-    :returns: localized instances
+    :returns: extracted instances
     """
     Logger.info("Extracting meeting UUIDs and local start times...")
     if not info or "meetings" not in info:
@@ -21,7 +21,7 @@ def extract_instances(info: dict) -> list[Instance]:
     instances = []
     for meeting in info["meetings"]:
         if "uuid" in meeting and "start_time" in meeting:
-            instance = (meeting["uuid"], localize(meeting["start_time"]))
+            instance = (meeting["uuid"], meeting["start_time"])
             instances.append(instance)
     instances = sorted(instances, key=lambda x: x[1])
     return instances

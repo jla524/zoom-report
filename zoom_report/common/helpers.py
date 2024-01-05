@@ -22,20 +22,3 @@ def encode_uuid(uuid: str) -> str:
     if uuid.startswith("/") or "//" in uuid:
         uuid = quote_plus(quote_plus(uuid))
     return uuid
-
-
-def localize(timestamp: str) -> str:
-    """
-    Convert an ISO timestamp from UTC time to local time.
-    :param timestamp: a timestamp to convert
-    :returns: a corresponding timestamp in local time
-    """
-    timestamp = timestamp.replace("Z", "+00:00")
-    timezone = pytz.timezone(Config.timezone())
-
-    timestamp = (
-        datetime.fromisoformat(timestamp)
-        .astimezone(timezone)
-        .strftime(Config.datetime_format())
-    )
-    return timestamp
