@@ -17,6 +17,7 @@ class Ragic:
     """
 
     __base_url = "https://na3.ragic.com"
+    __headers = {"Authorization": f"Basic {Config.ragic_api_key()}"}
 
     @staticmethod
     def validate_data(data: JSON) -> bool:
@@ -32,23 +33,50 @@ class Ragic:
                 return False
         return True
 
+    def __get_data(self, api_route: str, params: JSON, timeout: int = 10) -> request.Response:
+        """
+        Get data from the specified API route.
+        :param api_route: an API route in Ragic
+        :param params: parameters for the request
+        :param timeout: timeout the request after n seconds
+        :returns: a response from Ragic
+        """
+        if not self.validate_data(data):
+            raise TypeError("Payload type check failed.")
+        url = f"{self.__base_url}/{api_route}"
+        response = requests.get(url, headers=self.__headers, params=params, timeout=timeout)
+        return response
+
     def __send_data(self, api_route: str, data: JSON, timeout: int = 10) -> requests.Response:
         """
         Send data to the specified API route.
         :param api_route: an API route in Ragic
         :param data: data to be sent to Ragic
+        :param timeout: timeout the request after n seconds
         :returns: a response from Ragic
         """
         if not self.validate_data(data):
             raise TypeError("Payload type check failed.")
-
         url = f"{self.__base_url}/{api_route}"
-        api_key = Config.ragic_api_key()
-        headers = {"Authorization": f"Basic {api_key}"}
-        response = requests.post(url, data=data, headers=headers, timeout=timeout)
+        response = requests.post(url, headers=self.__headers, data=data, timeout=timeout)
         if response.status_code == HTTPStatus.OK:
             Logger.info(f"Data sent to {url}.")
         return response
+
+    def __record_exists(self, api_route: str, data: JSON, timeout: int = 10) -> bool:
+        """
+        Check if a record exists in the API route.
+        :param api_route: an API route in Ragic
+        :param data: data to be sent to Ragic
+        :param timeout: timeout the request after n seconds
+        :returns: True if the record exists and False otherwise
+        """
+        if not self.validate_data(data):
+            raise TypeError("Payload type check failed.")
+        url = f"{self.__base_url}/{api_route}"
+        filters = [f"{k},eq,{v}" for k, v in data.items()]
+        result = ragic.get_data(route, params={"where": filters}).json()
+        return bool(result)
 
     def write_attendance(self, attendance_info: JSON) -> JSON:
         """
@@ -56,13 +84,16 @@ class Ragic:
         :param attendance_info: attendance info from Zoom
         :returns: response data from Ragic
         """
+        route = Config.ragic_attendance_route()
         payload = {
             Cogv.MEETING_NUMBER: attendance_info["uuid"],
             Cogv.TOPIC: attendance_info["topic"],
             Cogv.START_TIME: attendance_info["start_time"],
             Cogv.MEETING_ID: attendance_info["meeting_id"],
         }
-        route = Config.ragic_attendance_route()
+        if self.__record_exists(route, payload):
+            Logger.warn(f"Record exists in {url}, skipping write.")
+            return {}
         return self.__send_data(route, payload).json()
 
     def write_participants(self, uuid: str, participant_info: JSON) -> JSON:
@@ -72,6 +103,7 @@ class Ragic:
         :param participants_info: participants info from Zoom
         :returns: response data from Ragic
         """
+        route = Config.ragic_participants_route()
         payload = {
             Cogv.SUB_MEETING_NUMBER: uuid,
             Cogv.NAME: participant_info["name"],
@@ -80,5 +112,7 @@ class Ragic:
             Cogv.LEAVE_TIME: participant_info["leave_time"],
             Cogv.TOTAL_DURATION: participant_info["total_duration"],
         }
-        route = Config.ragic_participants_route()
+        if self.__record_exists(route, payload):
+            Logger.warn(f"Record exists in {url}, skipping write.")
+            return {}
         return self.__send_data(route, payload).json()

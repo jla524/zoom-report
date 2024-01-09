@@ -73,6 +73,6 @@ def save_report(meeting_id: str, meeting_info: JSON, attendance: pd.DataFrame) -
     if not write_to_ragic(attendance, payload_info):
         return False
     save_to_disk(attendance, path)
-    #upload_to_dropbox(path)
+    upload_to_dropbox(path)
     Logger.info("Report has been saved in storage.")
     return True
