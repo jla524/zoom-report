@@ -29,11 +29,11 @@ class Ragic:
         if not isinstance(data, dict):
             return False
         for key, value in data.items():
-            if not (isinstance(key, (str, int)) and isinstance(value, (str, int, float))):
+            if not (isinstance(key, (str, int)) and isinstance(value, (str, int, float, list))):
                 return False
         return True
 
-    def __get_data(self, api_route: str, params: JSON, timeout: int = 10) -> request.Response:
+    def __get_data(self, api_route: str, params: JSON, timeout: int = 10) -> requests.Response:
         """
         Get data from the specified API route.
         :param api_route: an API route in Ragic
@@ -41,7 +41,7 @@ class Ragic:
         :param timeout: timeout the request after n seconds
         :returns: a response from Ragic
         """
-        if not self.validate_data(data):
+        if not self.validate_data(params):
             raise TypeError("Payload type check failed.")
         url = f"{self.__base_url}/{api_route}"
         response = requests.get(url, headers=self.__headers, params=params, timeout=timeout)
@@ -63,19 +63,20 @@ class Ragic:
             Logger.info(f"Data sent to {url}.")
         return response
 
-    def __record_exists(self, api_route: str, data: JSON, timeout: int = 10) -> bool:
+    def __record_exists(self, api_route: str, data: JSON, key: str, timeout: int = 10) -> bool:
         """
         Check if a record exists in the API route.
         :param api_route: an API route in Ragic
         :param data: data to be sent to Ragic
         :param timeout: timeout the request after n seconds
+        :param key: a key to a field containing unique records
         :returns: True if the record exists and False otherwise
         """
         if not self.validate_data(data):
             raise TypeError("Payload type check failed.")
         url = f"{self.__base_url}/{api_route}"
-        filters = [f"{k},eq,{v}" for k, v in data.items()]
-        result = ragic.get_data(route, params={"where": filters}).json()
+        filters = [f"{key},eq,{data[key]}"]
+        result = self.__get_data(api_route, params={"where": filters}).json()
         return bool(result)
 
     def write_attendance(self, attendance_info: JSON) -> JSON:
@@ -91,8 +92,8 @@ class Ragic:
             Cogv.START_TIME: attendance_info["start_time"],
             Cogv.MEETING_ID: attendance_info["meeting_id"],
         }
-        if self.__record_exists(route, payload):
-            Logger.warn(f"Record exists in {url}, skipping write.")
+        if self.__record_exists(route, payload, Cogv.MEETING_NUMBER):
+            Logger.warn(f"Record exists in {route}, skipping write.")
             return {}
         return self.__send_data(route, payload).json()
 
@@ -112,7 +113,7 @@ class Ragic:
             Cogv.LEAVE_TIME: participant_info["leave_time"],
             Cogv.TOTAL_DURATION: participant_info["total_duration"],
         }
-        if self.__record_exists(route, payload):
-            Logger.warn(f"Record exists in {url}, skipping write.")
+        if self.__record_exists(route, payload, Cogv.SUB_MEETING_NUMBER):
+            Logger.warn(f"Record exists in {route}, skipping write.")
             return {}
         return self.__send_data(route, payload).json()
