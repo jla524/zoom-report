@@ -63,7 +63,7 @@ class Ragic:
             Logger.info(f"Data sent to {url}.")
         return response
 
-    def __record_exists(self, api_route: str, data: JSON, key: str, timeout: int = 10) -> bool:
+    def __record_exists(self, api_route: str, data: JSON, key: str) -> bool:
         """
         Check if a record exists in the API route.
         :param api_route: an API route in Ragic
@@ -74,7 +74,6 @@ class Ragic:
         """
         if not self.validate_data(data):
             raise TypeError("Payload type check failed.")
-        url = f"{self.__base_url}/{api_route}"
         filters = [f"{key},eq,{data[key]}"]
         result = self.__get_data(api_route, params={"where": filters}).json()
         return bool(result)
