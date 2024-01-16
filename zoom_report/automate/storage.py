@@ -35,13 +35,13 @@ def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON) -> bool:
     """
     Logger.info("Writing records to Ragic...")
     response = Ragic().write_attendance(meeting_info)
-    if response["status"] == "INVALID":
+    if response.get("status", "") == "INVALID":
         Logger.warn("An error occurred when writing to attendance.")
         Logger.error(response["msg"])
         return False
     for _, row in frame.iterrows():
         response = Ragic().write_participants(meeting_info["uuid"], row)
-        if response["status"] == "INVALID":
+        if response.get("status", "") == "INVALID":
             Logger.warn("An error occured when writing to participants.")
             Logger.error(response["msg"])
             return False

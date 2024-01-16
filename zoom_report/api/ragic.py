@@ -63,18 +63,18 @@ class Ragic:
             Logger.info(f"Data sent to {url}.")
         return response
 
-    def __record_exists(self, api_route: str, data: JSON, key: str) -> bool:
+    def __record_exists(self, api_route: str, data: JSON, key: list[str]) -> bool:
         """
         Check if a record exists in the API route.
         :param api_route: an API route in Ragic
         :param data: data to be sent to Ragic
         :param timeout: timeout the request after n seconds
-        :param key: a key to a field containing unique records
+        :param key: a list of keys to use for duplicate checking
         :returns: True if the record exists and False otherwise
         """
         if not self.validate_data(data):
             raise TypeError("Payload type check failed.")
-        filters = [f"{key},eq,{data[key]}"]
+        filters = [f"{key},eq,{data[key]}" for key in keys]
         result = self.__get_data(api_route, params={"where": filters}).json()
         return bool(result)
 
@@ -91,7 +91,7 @@ class Ragic:
             Cogv.START_TIME: attendance_info["start_time"],
             Cogv.MEETING_ID: attendance_info["meeting_id"],
         }
-        if self.__record_exists(route, payload, Cogv.MEETING_NUMBER):
+        if self.__record_exists(route, payload, [Cogv.MEETING_NUMBER, Cogv.TOPIC]):
             Logger.warn(f"Record exists in {route}, skipping write.")
             return {}
         return self.__send_data(route, payload).json()
@@ -112,7 +112,7 @@ class Ragic:
             Cogv.LEAVE_TIME: participant_info["leave_time"],
             Cogv.TOTAL_DURATION: participant_info["total_duration"],
         }
-        if self.__record_exists(route, payload, Cogv.SUB_MEETING_NUMBER):
+        if self.__record_exists(route, payload, [Cogv.SUB_MEETING_NUMBER, Cogv.NAME]):
             Logger.warn(f"Record exists in {route}, skipping write.")
             return {}
         return self.__send_data(route, payload).json()
