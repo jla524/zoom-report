@@ -63,13 +63,13 @@ class Ragic:
             Logger.info(f"Data sent to {url}.")
         return response
 
-    def __record_exists(self, api_route: str, data: JSON, key: list[str]) -> bool:
+    def __record_exists(self, api_route: str, data: JSON, keys: list[str]) -> bool:
         """
         Check if a record exists in the API route.
         :param api_route: an API route in Ragic
         :param data: data to be sent to Ragic
         :param timeout: timeout the request after n seconds
-        :param key: a list of keys to use for duplicate checking
+        :param keys: a list of keys to use for duplicate checking
         :returns: True if the record exists and False otherwise
         """
         if not self.validate_data(data):
