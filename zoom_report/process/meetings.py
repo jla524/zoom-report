@@ -40,7 +40,7 @@ def filter_instances(instances: list[Instance], days: int = 365) -> list[Instanc
         date_format = Config.datetime_format().split(" ", maxsplit=1)[0]
         start_date = (date.today() - timedelta(days=days)).strftime(date_format)
         index = len(instances) - 1
-        while instances[index][1] > start_date:
+        while index >= 0 and instances[index][1] > start_date:
             index -= 1
         instances = instances[index+1:]
     return instances
