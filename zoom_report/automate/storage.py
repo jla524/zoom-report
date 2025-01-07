@@ -2,6 +2,7 @@
 Write attendance data to storage
 """
 from pathlib import Path
+from time import sleep
 
 import pandas as pd
 
@@ -40,11 +41,12 @@ def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON) -> bool:
         Logger.error(response["msg"])
         return False
     for _, row in frame.iterrows():
-        response = Ragic().write_participants(meeting_info["uuid"], row)
+        response = Ragic().write_participant(meeting_info["uuid"], row)
         if response.get("status", "") == "INVALID":
             Logger.warn("An error occured when writing to participants.")
             Logger.error(response["msg"])
             return False
+        sleep(2)  # temporary delay to avoid API limits
     return True
 
 

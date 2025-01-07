@@ -96,9 +96,9 @@ class Ragic:
             return {}
         return self.__send_data(route, payload).json()
 
-    def write_participants(self, uuid: str, participant_info: JSON) -> JSON:
+    def write_participant(self, uuid: str, participant_info: JSON) -> JSON:
         """
-        Write participants data to Ragic.
+        Write participant data to Ragic.
         :param uuid: a UUID of the meeting
         :param participants_info: participants info from Zoom
         :returns: response data from Ragic
