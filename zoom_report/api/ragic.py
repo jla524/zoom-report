@@ -112,7 +112,4 @@ class Ragic:
             Cogv.LEAVE_TIME: participant_info["leave_time"],
             Cogv.TOTAL_DURATION: participant_info["total_duration"],
         }
-        if self.__record_exists(route, payload, [Cogv.SUB_MEETING_NUMBER, Cogv.NAME]):
-            Logger.warn(f"Record exists in {route}, skipping write.")
-            return {}
         return self.__send_data(route, payload).json()
