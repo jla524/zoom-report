@@ -93,7 +93,7 @@ class Ragic:
         }
         if self.__record_exists(route, payload, [Cogv.MEETING_NUMBER, Cogv.TOPIC]):
             Logger.warn(f"Record exists in {route}, skipping write.")
-            return {}
+            return {"status": "SKIPPED"}
         return self.__send_data(route, payload).json()
 
     def write_participant(self, uuid: str, participant_info: JSON) -> JSON:
