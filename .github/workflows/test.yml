@@ -32,7 +32,7 @@ jobs:
       run: poetry install
       if: steps.cache.outputs.cache-hit != 'true'
     - name: Copy sample .env
-      run: cp .env.example .env
+      run: cp example.env .env
     - name: Run pytest
       run: poetry run analyze
 
