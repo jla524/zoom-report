@@ -49,7 +49,7 @@ def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON) -> bool:
             Logger.warn("An error occured when writing to participants.")
             Logger.error(response["msg"])
             return False
-        sleep(2)  # temporary delay to avoid API limits
+        sleep(2)  # wait 2 seconds to avoid API limits
     return True
 
 
