@@ -37,7 +37,7 @@ def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON) -> bool:
     Logger.info("Writing records to Ragic...")
     response = Ragic().write_attendance(meeting_info)
     if response.get("status", "") == "SKIPPED":
-        Logger.info("Update has been skipped.")
+        Logger.warn("Update has been skipped.")
         return False
     if response.get("status", "") == "INVALID":
         Logger.warn("An error occurred when writing to attendance.")
