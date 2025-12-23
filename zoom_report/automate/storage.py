@@ -45,7 +45,7 @@ def write_to_ragic(
     for _, row in frame.iterrows():
         response = Ragic().write_participant(meeting_info["uuid"], row)
         if not handle_api_status(response, "writing to participants"):
-            return False
+            continue
         sleep(api_delay_seconds)  # wait a few seconds to avoid API limits
     return True
 
