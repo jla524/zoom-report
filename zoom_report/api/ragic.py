@@ -78,7 +78,7 @@ class Ragic:
         result = self.__get_data(api_route, params={"where": filters}).json()
         return bool(result)
 
-    def write_attendance(self, attendance_info: JSON) -> JSON:
+    def write_attendance(self, attendance_info: JSON, dedup: bool = False) -> JSON:
         """
         Write attendance data to Ragic.
         :param attendance_info: attendance info from Zoom
@@ -91,12 +91,12 @@ class Ragic:
             Cogv.START_TIME: attendance_info["start_time"],
             Cogv.MEETING_ID: attendance_info["meeting_id"],
         }
-        if self.__record_exists(route, payload, [Cogv.MEETING_NUMBER, Cogv.TOPIC]):
+        if dedup and self.__record_exists(route, payload, [Cogv.MEETING_NUMBER, Cogv.TOPIC]):
             Logger.warn(f"Record exists in {route}, skipping write.")
             return {"status": "SKIPPED"}
         return self.__send_data(route, payload).json()
 
-    def write_participant(self, uuid: str, participant_info: JSON) -> JSON:
+    def write_participant(self, uuid: str, participant_info: JSON, dedup: bool = True) -> JSON:
         """
         Write participant data to Ragic.
         :param uuid: a UUID of the meeting
@@ -112,4 +112,7 @@ class Ragic:
             Cogv.LEAVE_TIME: participant_info["leave_time"],
             Cogv.TOTAL_DURATION: participant_info["total_duration"],
         }
+        if dedup and self.__record_exists(route, payload, [Cogv.SUB_MEETING_NUMBER, Cogv.NAME]):
+            Logger.warn(f"Record exists in {route}, skipping write.")
+            return {"status": "SKIPPED"}
         return self.__send_data(route, payload).json()

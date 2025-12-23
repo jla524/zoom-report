@@ -8,10 +8,12 @@ import pandas as pd
 
 from zoom_report import Config
 from zoom_report.logger.pkg_logger import Logger
-from zoom_report.common.helpers import JSON
 from zoom_report.api.ragic import Ragic
 from zoom_report.sdk.transfer_data import TransferData
+from zoom_report.common.helpers import JSON, handle_api_status
 from zoom_report.local.disk import generate_filepath, save_to_disk
+
+API_DELAY = 2.5
 
 
 def upload_to_dropbox(source_file: Path) -> None:
@@ -27,7 +29,7 @@ def upload_to_dropbox(source_file: Path) -> None:
     Logger.info("File uploaded to " + str(target_file))
 
 
-def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON) -> bool:
+def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON, api_delay: float = API_DELAY) -> bool:
     """
     Write a given attendance report to a pre-configured route in Ragic.
     :param frame: a DataFrame with attendance data to write
@@ -36,20 +38,13 @@ def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON) -> bool:
     """
     Logger.info("Writing records to Ragic...")
     response = Ragic().write_attendance(meeting_info)
-    if response.get("status", "") == "SKIPPED":
-        Logger.warn("Update has been skipped.")
-        return False
-    if response.get("status", "") == "INVALID":
-        Logger.warn("An error occurred when writing to attendance.")
-        Logger.error(response["msg"])
-        return False
+    if not handle_api_status(response, "writing to attendance"):
+        Logger.warn("Attempting to update existing attendance...")
     for _, row in frame.iterrows():
         response = Ragic().write_participant(meeting_info["uuid"], row)
-        if response.get("status", "") == "INVALID":
-            Logger.warn("An error occured when writing to participants.")
-            Logger.error(response["msg"])
-            return False
-        sleep(2)  # wait 2 seconds to avoid API limits
+        if not handle_api_status(response, "writing to participants"):
+            continue
+        sleep(api_delay)  # wait a few seconds to avoid API limits
     return True
 
 
