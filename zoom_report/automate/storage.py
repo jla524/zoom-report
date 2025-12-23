@@ -41,7 +41,7 @@ def write_to_ragic(
     Logger.info("Writing records to Ragic...")
     response = Ragic().write_attendance(meeting_info)
     if not handle_api_status(response, "writing to attendance"):
-        Logger.warning("Attempting to update existing attendance...")
+        Logger.warn("Attempting to update existing attendance...")
     for _, row in frame.iterrows():
         response = Ragic().write_participant(meeting_info["uuid"], row)
         if not handle_api_status(response, "writing to participants"):
