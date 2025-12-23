@@ -4,8 +4,6 @@ Helper functions
 from typing import Any, Optional
 from urllib.parse import quote_plus
 
-import requests
-
 from zoom_report.logger.pkg_logger import Logger
 
 JSON = dict[str, Any]
@@ -23,7 +21,7 @@ def encode_uuid(uuid: str) -> str:
     return uuid
 
 
-def handle_api_status(response: requests.Response, api_description: Optional[str] = None) -> bool:
+def handle_api_status(response: JSON, api_description: Optional[str] = None) -> bool:
     """
     Parse status message from API response and decide if it's safe to continue.
     :param response: an API response
