@@ -13,7 +13,7 @@ from zoom_report.sdk.transfer_data import TransferData
 from zoom_report.common.helpers import JSON, handle_api_status
 from zoom_report.local.disk import generate_filepath, save_to_disk
 
-API_DELAY_SECONDS = 2.5
+API_DELAY = 2.5
 
 
 def upload_to_dropbox(source_file: Path) -> None:
@@ -29,9 +29,7 @@ def upload_to_dropbox(source_file: Path) -> None:
     Logger.info("File uploaded to " + str(target_file))
 
 
-def write_to_ragic(
-    frame: pd.DataFrame, meeting_info: JSON, api_delay_seconds: float = API_DELAY_SECONDS
-) -> bool:
+def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON, api_delay: float = API_DELAY) -> bool:
     """
     Write a given attendance report to a pre-configured route in Ragic.
     :param frame: a DataFrame with attendance data to write
@@ -46,7 +44,7 @@ def write_to_ragic(
         response = Ragic().write_participant(meeting_info["uuid"], row)
         if not handle_api_status(response, "writing to participants"):
             continue
-        sleep(api_delay_seconds)  # wait a few seconds to avoid API limits
+        sleep(api_delay)  # wait a few seconds to avoid API limits
     return True
 
 
