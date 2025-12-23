@@ -23,7 +23,7 @@ def encode_uuid(uuid: str) -> str:
     return uuid
 
 
-def handle_api_status(response: requests.Reponse, api_description: Optional[str] = None) -> bool:
+def handle_api_status(response: requests.Response, api_description: Optional[str] = None) -> bool:
     """
     Parse status message from API response and decide if it's safe to continue.
     :param response: an API response
@@ -38,3 +38,4 @@ def handle_api_status(response: requests.Reponse, api_description: Optional[str]
         Logger.warn(f"An error occurred when {api_description}.")
         Logger.error(response["msg"])
         return False
+    return True
