@@ -34,6 +34,6 @@ def handle_api_status(response: JSON, api_description: Optional[str] = None) -> 
         return False
     if response.get("status", "") == "INVALID":
         Logger.warn(f"An error occurred when {api_description}.")
-        Logger.error(response["msg"])
+        Logger.error(response.get("msg", "Unknown error."))
         return False
     return True
