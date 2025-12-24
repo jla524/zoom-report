@@ -1,7 +1,6 @@
 """
 Write attendance data to storage
 """
-from pathlib import Path
 from time import sleep
 
 import pandas as pd
