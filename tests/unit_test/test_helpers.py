@@ -24,4 +24,4 @@ def test_handle_api_status() -> None:
     for bad_status in ("SKIPPED", "INVALID"):
         assert handle_api_status({"status": bad_status}) is False
     for good_status in ("", "SUCCESS", "OK"):
-        assert handle_api_status({"status": bad_status}) is True
+        assert handle_api_status({"status": good_status}) is True
