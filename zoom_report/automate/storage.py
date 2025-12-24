@@ -1,32 +1,15 @@
 """
 Write attendance data to storage
 """
-from pathlib import Path
 from time import sleep
 
 import pandas as pd
 
-from zoom_report import Config
 from zoom_report.logger.pkg_logger import Logger
 from zoom_report.api.ragic import Ragic
-from zoom_report.sdk.transfer_data import TransferData
 from zoom_report.common.helpers import JSON, handle_api_status
-from zoom_report.local.disk import generate_filepath, save_to_disk
 
 API_DELAY = 2.5
-
-
-def upload_to_dropbox(source_file: Path) -> None:
-    """
-    Upload a given file to a pre-configured directory in DropBox.
-    :param source_file: Path of the file to upload
-    :returns: None
-    """
-    Logger.info("Uploading report to DropBox...")
-    transfer = TransferData(Config.dropbox_key(), Config.dropbox_secret(), Config.dropbox_token())
-    target_file = f"{Config.dropbox_storage_dir()}/{source_file.name}"
-    transfer.upload_file(source_file, target_file)
-    Logger.info("File uploaded to " + str(target_file))
 
 
 def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON, api_delay: float = API_DELAY) -> bool:
@@ -58,20 +41,10 @@ def save_report(meeting_id: str, meeting_info: JSON, attendance: pd.DataFrame) -
     if attendance.empty:
         Logger.warn("Nothing to save, DataFrame is empty.")
         return False
-    path = generate_filepath(
-        meeting_info["topic"], meeting_info["uuid"], meeting_info["start_time"]
-    )
-    if path.exists():
-        Logger.info("File already exists in storage.")
-        return False
     payload_info = {
         "uuid": meeting_info["uuid"],
         "start_time": meeting_info["start_time"],
         "topic": meeting_info["topic"],
         "meeting_id": meeting_id,
     }
-    if not write_to_ragic(attendance, payload_info):
-        return False
-    save_to_disk(attendance, path)
-    Logger.info("Report has been saved in storage.")
-    return True
+    return write_to_ragic(attendance, payload_info)

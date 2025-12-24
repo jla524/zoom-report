@@ -5,10 +5,10 @@ import sys
 
 from zoom_report import Config
 from zoom_report.command_line import Cli
-from zoom_report.process.meetings import get_instances, get_details
-from zoom_report.automate.attendance import get_report
-from zoom_report.automate.storage import save_report
 from zoom_report.logger.pkg_logger import Logger
+from zoom_report.automate.storage import save_report
+from zoom_report.automate.attendance import get_report
+from zoom_report.process.meetings import get_instances, get_details
 
 
 def process_reports(meeting_id: str, n_days: int) -> bool:
