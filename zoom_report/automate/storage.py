@@ -25,9 +25,8 @@ def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON, api_delay: float = A
         Logger.warn("Attempting to update existing attendance...")
     for _, row in frame.iterrows():
         response = Ragic().write_participant(meeting_info["uuid"], row)
-        if not handle_api_status(response, "writing to participants"):
-            continue
-        sleep(api_delay)  # wait a few seconds to avoid API limits
+        if handle_api_status(response, "writing to participants"):
+            sleep(api_delay)  # wait a few seconds to avoid API limits
     return True
 
 
