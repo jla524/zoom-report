@@ -19,12 +19,17 @@ def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON, api_delay: float = A
     :param meeting_info: relevant info for a meeting
     :returns: True if data is written successfully and False otherwise
     """
+    ragic = Ragic()
     Logger.info("Writing records to Ragic...")
-    response = Ragic().write_attendance(meeting_info)
-    if not handle_api_status(response, "writing to attendance"):
+    response = ragic.write_attendance(meeting_info)
+    if handle_api_status(response, "writing to attendance"):
+        participants = ragic.read_participants(meeting_info["uuid"])
+        names = [participant["Name"] for participant in participants if "Name" if participant]
+        frame = frame[~frame["name"].isin(names)]
+    else:
         Logger.warn("Attempting to update existing attendance...")
     for _, row in frame.iterrows():
-        response = Ragic().write_participant(meeting_info["uuid"], row)
+        response = ragic.write_participant(meeting_info["uuid"], row)
         if handle_api_status(response, "writing to participants"):
             sleep(api_delay)  # wait a few seconds to avoid API limits
     return True
