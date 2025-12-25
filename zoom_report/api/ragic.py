@@ -2,6 +2,7 @@
 A wrapper for the Ragic API
 """
 from http import HTTPStatus
+from typing import Optional
 
 import requests
 
@@ -9,6 +10,8 @@ from zoom_report import Config
 from zoom_report.common.enums import Cogv
 from zoom_report.common.helpers import JSON
 from zoom_report.logger.pkg_logger import Logger
+
+REQUEST_TIMEOUT = 30
 
 
 class Ragic:
@@ -33,7 +36,9 @@ class Ragic:
                 return False
         return True
 
-    def __get_data(self, api_route: str, params: JSON = {}, timeout: int = 10) -> requests.Response:
+    def __get_data(
+        self, api_route: str, params: Optional[JSON] = None, timeout: int = REQUEST_TIMEOUT
+    ) -> requests.Response:
         """
         Get data from the specified API route.
         :param api_route: an API route in Ragic
@@ -47,7 +52,7 @@ class Ragic:
         response = requests.get(url, headers=self.__headers, params=params, timeout=timeout)
         return response
 
-    def __send_data(self, api_route: str, data: JSON, timeout: int = 10) -> requests.Response:
+    def __send_data(self, api_route: str, data: JSON, timeout: int = REQUEST_TIMEOUT) -> requests.Response:
         """
         Send data to the specified API route.
         :param api_route: an API route in Ragic
