@@ -24,10 +24,14 @@ def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON, delay: float = API_D
     response = ragic.write_attendance(meeting_info)
     if handle_api_status(response, "writing to attendance"):
         participants = ragic.read_participants(meeting_info["uuid"])
-        names = [
-            participant["Name"] for participant in participants.values() if "Name" in participant
-        ]
-        frame = frame[~frame["name"].isin(names)]
+        if participants:
+            names = [
+                participant["Name"]
+                for participant in participants.values()
+                if "Name" in participant
+            ]
+            Logger.info(f"Filtering out {len(names)} existing records...")
+            frame = frame[~frame["name"].isin(names)]
     else:
         Logger.warn("Attempting to update existing attendance...")
     for _, row in frame.iterrows():
