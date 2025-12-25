@@ -11,7 +11,7 @@ from zoom_report.common.enums import Cogv
 from zoom_report.common.helpers import JSON
 from zoom_report.logger.pkg_logger import Logger
 
-REQUEST_TIMEOUT = 30
+REQUEST_TIMEOUT = 60
 
 
 class Ragic:
@@ -46,7 +46,7 @@ class Ragic:
         :param timeout: timeout the request after n seconds
         :returns: a response from Ragic
         """
-        if not self.validate_data(params):
+        if params and not self.validate_data(params):
             raise TypeError("Payload type check failed.")
         url = f"{self.__base_url}/{api_route}"
         response = requests.get(url, headers=self.__headers, params=params, timeout=timeout)
@@ -91,7 +91,7 @@ class Ragic:
         """
         route = Config.ragic_participants_route()
         filters = [f"{Cogv.SUB_MEETING_NUMBER},eq,{uuid}"]
-        return self.__get_data(route, params={"where": filters})
+        return self.__get_data(route, params={"where": filters}).json()
 
     def write_participant(self, uuid: str, participant_info: JSON) -> JSON:
         """
