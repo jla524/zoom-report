@@ -2,6 +2,7 @@
 Write attendance data to storage
 """
 from time import sleep
+from typing import Union
 
 import pandas as pd
 
@@ -9,10 +10,12 @@ from zoom_report.logger.pkg_logger import Logger
 from zoom_report.api.ragic import Ragic
 from zoom_report.common.helpers import JSON, handle_api_status
 
-API_DELAY = 2.5
+API_DELAY = 2
 
 
-def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON, delay: float = API_DELAY) -> bool:
+def write_to_ragic(
+    frame: pd.DataFrame, meeting_info: JSON, delay: Union[int, float] = API_DELAY
+) -> bool:
     """
     Write a given attendance report to a pre-configured route in Ragic.
     :param frame: a DataFrame with attendance data to write
