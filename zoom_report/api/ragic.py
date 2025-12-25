@@ -52,7 +52,9 @@ class Ragic:
         response = requests.get(url, headers=self.__headers, params=params, timeout=timeout)
         return response
 
-    def __send_data(self, api_route: str, data: JSON, timeout: int = REQUEST_TIMEOUT) -> requests.Response:
+    def __send_data(
+        self, api_route: str, data: JSON, timeout: int = REQUEST_TIMEOUT
+    ) -> requests.Response:
         """
         Send data to the specified API route.
         :param api_route: an API route in Ragic
