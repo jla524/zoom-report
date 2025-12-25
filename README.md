@@ -2,7 +2,7 @@
 
 Automate Zoom attendance reports with Python.
 
-![workflow](assets/diagram.png)
+![workflow][0]
 
 ## Quickstart Guide
 
@@ -30,6 +30,7 @@ Automate Zoom attendance reports with Python.
 
 [Blazing fast CI with GitHub Actions, Poetry, Black and Pytest][7]
 
+[0]: https://private-user-images.githubusercontent.com/39754370/530231598-d61246a0-da5b-4479-914f-e58ea32bcf2e.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjY2OTA5NDEsIm5iZiI6MTc2NjY5MDY0MSwicGF0aCI6Ii8zOTc1NDM3MC81MzAyMzE1OTgtZDYxMjQ2YTAtZGE1Yi00NDc5LTkxNGYtZTU4ZWEzMmJjZjJlLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTEyMjUlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUxMjI1VDE5MjQwMVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTcwYTBhZWJjYThkOTc0MjZjZjI3MTdlNzBiNTA0MzA4Y2EwYjZlY2JkZDRhNDVkZTM0NzE2MDZkOTgzMTRmYjgmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.sQWbnlT-4SNytMow7PFlnrtZd8CvvGg7ewGT8IG97J8
 [1]: https://python-poetry.org/docs/#installation
 [2]: https://github.com/mattcoding4days/kickstart
 [3]: https://medium.com/swlh/how-i-automate-my-church-organisations-zoom-meeting-attendance-reporting-with-python-419dfe7da58c
