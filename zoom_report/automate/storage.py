@@ -24,8 +24,10 @@ def write_to_ragic(
     """
     ragic = Ragic()
     Logger.info("Writing records to Ragic...")
+    # write attendance sheet if it doesn't exist
     response = ragic.write_attendance(meeting_info)
     if not handle_api_status(response, "writing to attendance"):
+        # append mode, remove existing Ragic records from frame
         participants = ragic.read_participants(meeting_info["uuid"])
         if participants:
             names = [
@@ -36,6 +38,7 @@ def write_to_ragic(
             Logger.info(f"Filtering out {len(names)} existing records...")
             frame = frame[~frame["name"].isin(names)]
         Logger.warn("Attempting to update existing attendance...")
+    # write unique attendance records into Ragic
     for _, row in frame.iterrows():
         response = ragic.write_participant(meeting_info["uuid"], row)
         if handle_api_status(response, "writing to participants"):
