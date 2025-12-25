@@ -2,6 +2,7 @@
 Write attendance data to storage
 """
 from time import sleep
+from typing import Union
 
 import pandas as pd
 
@@ -9,24 +10,39 @@ from zoom_report.logger.pkg_logger import Logger
 from zoom_report.api.ragic import Ragic
 from zoom_report.common.helpers import JSON, handle_api_status
 
-API_DELAY = 2.5
+API_DELAY = 2
 
 
-def write_to_ragic(frame: pd.DataFrame, meeting_info: JSON, api_delay: float = API_DELAY) -> bool:
+def write_to_ragic(
+    frame: pd.DataFrame, meeting_info: JSON, delay: Union[int, float] = API_DELAY
+) -> bool:
     """
     Write a given attendance report to a pre-configured route in Ragic.
     :param frame: a DataFrame with attendance data to write
     :param meeting_info: relevant info for a meeting
     :returns: True if data is written successfully and False otherwise
     """
+    ragic = Ragic()
     Logger.info("Writing records to Ragic...")
-    response = Ragic().write_attendance(meeting_info)
+    # write attendance sheet if it doesn't exist
+    response = ragic.write_attendance(meeting_info)
     if not handle_api_status(response, "writing to attendance"):
+        # append mode, remove existing Ragic records from frame
+        participants = ragic.read_participants(meeting_info["uuid"])
+        if participants:
+            names = [
+                participant["Name"]
+                for participant in participants.values()
+                if "Name" in participant
+            ]
+            Logger.info(f"Filtering out {len(names)} existing records...")
+            frame = frame[~frame["name"].isin(names)]
         Logger.warn("Attempting to update existing attendance...")
+    # write unique attendance records into Ragic
     for _, row in frame.iterrows():
-        response = Ragic().write_participant(meeting_info["uuid"], row)
+        response = ragic.write_participant(meeting_info["uuid"], row)
         if handle_api_status(response, "writing to participants"):
-            sleep(api_delay)  # wait a few seconds to avoid API limits
+            sleep(delay)  # wait a few seconds to avoid API limits
     return True
 
 

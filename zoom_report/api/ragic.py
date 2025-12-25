@@ -2,6 +2,7 @@
 A wrapper for the Ragic API
 """
 from http import HTTPStatus
+from typing import Optional
 
 import requests
 
@@ -9,6 +10,8 @@ from zoom_report import Config
 from zoom_report.common.enums import Cogv
 from zoom_report.common.helpers import JSON
 from zoom_report.logger.pkg_logger import Logger
+
+REQUEST_TIMEOUT = 60
 
 
 class Ragic:
@@ -33,7 +36,9 @@ class Ragic:
                 return False
         return True
 
-    def __get_data(self, api_route: str, params: JSON, timeout: int = 10) -> requests.Response:
+    def __get_data(
+        self, api_route: str, params: Optional[JSON] = None, timeout: int = REQUEST_TIMEOUT
+    ) -> requests.Response:
         """
         Get data from the specified API route.
         :param api_route: an API route in Ragic
@@ -41,13 +46,15 @@ class Ragic:
         :param timeout: timeout the request after n seconds
         :returns: a response from Ragic
         """
-        if not self.validate_data(params):
+        if params and not self.validate_data(params):
             raise TypeError("Payload type check failed.")
         url = f"{self.__base_url}/{api_route}"
         response = requests.get(url, headers=self.__headers, params=params, timeout=timeout)
         return response
 
-    def __send_data(self, api_route: str, data: JSON, timeout: int = 10) -> requests.Response:
+    def __send_data(
+        self, api_route: str, data: JSON, timeout: int = REQUEST_TIMEOUT
+    ) -> requests.Response:
         """
         Send data to the specified API route.
         :param api_route: an API route in Ragic
@@ -63,22 +70,7 @@ class Ragic:
             Logger.info(f"Data sent to {url}.")
         return response
 
-    def __record_exists(self, api_route: str, data: JSON, keys: list[str]) -> bool:
-        """
-        Check if a record exists in the API route.
-        :param api_route: an API route in Ragic
-        :param data: data to be sent to Ragic
-        :param timeout: timeout the request after n seconds
-        :param keys: a list of keys to use for duplicate checking
-        :returns: True if the record exists and False otherwise
-        """
-        if not self.validate_data(data):
-            raise TypeError("Payload type check failed.")
-        filters = [f"{key},eq,{data[key]}" for key in keys]
-        result = self.__get_data(api_route, params={"where": filters}).json()
-        return bool(result)
-
-    def write_attendance(self, attendance_info: JSON, dedup: bool = False) -> JSON:
+    def write_attendance(self, attendance_info: JSON) -> JSON:
         """
         Write attendance data to Ragic.
         :param attendance_info: attendance info from Zoom
@@ -91,12 +83,19 @@ class Ragic:
             Cogv.START_TIME: attendance_info["start_time"],
             Cogv.MEETING_ID: attendance_info["meeting_id"],
         }
-        if dedup and self.__record_exists(route, payload, [Cogv.MEETING_NUMBER, Cogv.TOPIC]):
-            Logger.warn(f"Record exists in {route}, skipping write.")
-            return {"status": "SKIPPED"}
         return self.__send_data(route, payload).json()
 
-    def write_participant(self, uuid: str, participant_info: JSON, dedup: bool = True) -> JSON:
+    def read_participants(self, uuid: str) -> JSON:
+        """
+        Read participant data from Ragic.
+        :param uuid: a UUID of the meeting
+        :returns: participants data from Ragic
+        """
+        route = Config.ragic_participants_route()
+        filters = [f"{Cogv.SUB_MEETING_NUMBER},eq,{uuid}"]
+        return self.__get_data(route, params={"where": filters}).json()
+
+    def write_participant(self, uuid: str, participant_info: JSON) -> JSON:
         """
         Write participant data to Ragic.
         :param uuid: a UUID of the meeting
@@ -112,7 +111,4 @@ class Ragic:
             Cogv.LEAVE_TIME: participant_info["leave_time"],
             Cogv.TOTAL_DURATION: participant_info["total_duration"],
         }
-        if dedup and self.__record_exists(route, payload, [Cogv.SUB_MEETING_NUMBER, Cogv.NAME]):
-            Logger.warn(f"Record exists in {route}, skipping write.")
-            return {"status": "SKIPPED"}
         return self.__send_data(route, payload).json()
