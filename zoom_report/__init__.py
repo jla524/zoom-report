@@ -52,8 +52,6 @@ class Config(metaclass=ThreadSafeMeta):
     )
     __base_dir = Path(__file__).resolve(strict=True).parent.parent
     __meeting_id_file = __base_dir / "assets" / "meeting_id.txt"
-    __output_dir = Path().home() / "participants"
-    __dropbox_storage_dir = "/VS-AV/Zoom Meeting Participants"
 
     __ragic_attendance_route = "lynvolunteer/cogv/18"
     __ragic_participants_route = "lynvolunteer/cogv/19"
@@ -199,20 +197,6 @@ class Config(metaclass=ThreadSafeMeta):
         Getter for meeting id file
         """
         return cls.__meeting_id_file
-
-    @classmethod
-    def output_dir(cls) -> Path:
-        """
-        Getter for output directory
-        """
-        return cls.__output_dir
-
-    @classmethod
-    def dropbox_storage_dir(cls) -> str:
-        """
-        Getter for dropbox storage directory
-        """
-        return cls.__dropbox_storage_dir
 
     @classmethod
     def ragic_attendance_route(cls) -> str:
