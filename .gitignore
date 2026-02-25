@@ -111,6 +111,9 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
+# Assets
+assets/meeting_id.txt
+
 # Environments
 .env
 .venv
