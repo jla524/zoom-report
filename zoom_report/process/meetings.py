@@ -59,18 +59,24 @@ def get_instances(meeting_id: str, filter_days: int) -> list[Instance]:
     return instances
 
 
-def get_info(uuid: str) -> list[JSON]:
+def get_info(uuid: str, max_pages: int = 100) -> list[JSON]:
     """
     Get an attendance info for a given UUID.
     :param uuid: a meeting UUID to retrieve info from
+    :param max_pages: maximum number of pages to retrieve
     :returns: participants info
     """
     zoom = Zoom()
     response = zoom.get_participants(uuid)
-    participants = response["participants"]
+    participants = response.get("participants", [])
+    page_count = 0
     while token := response.get("next_page_token"):
+        page_count += 1
+        if page_count > max_pages:
+            Logger.error(f"Exceeded maximum page limit ({max_pages}) for UUID {uuid}")
+            break
         response = zoom.get_participants(uuid, next_page_token=token)
-        participants += response["participants"]
+        participants.extend(response.get("participants", []))
     return participants
 
 
