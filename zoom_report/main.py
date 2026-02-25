@@ -2,6 +2,8 @@
 The main program to fetch and store attendance reports
 """
 import sys
+from pathlib import Path
+from typing import List
 
 from zoom_report import Config
 from zoom_report.command_line import Cli
@@ -9,6 +11,50 @@ from zoom_report.logger.pkg_logger import Logger
 from zoom_report.automate.storage import save_report
 from zoom_report.automate.attendance import get_report
 from zoom_report.process.meetings import get_instances, get_details
+
+
+MAX_FILE_SIZE = 1024 * 1024  # 1MB limit
+
+
+def validate_meeting_id_file(file_path: Path) -> None:
+    """
+    Validate that the meeting ID file exists and is within size limits.
+    :param file_path: path to the meeting ID file
+    :raises SystemExit: if validation fails
+    """
+    if not file_path.exists():
+        Logger.error(f"Meeting ID file not found: {file_path}")
+        sys.exit(1)
+    try:
+        file_size = file_path.stat().st_size
+        if file_size > MAX_FILE_SIZE:
+            Logger.error(f"Meeting ID file too large ({file_size} bytes, max {MAX_FILE_SIZE})")
+            sys.exit(1)
+        if file_size == 0:
+            Logger.error("Meeting ID file is empty")
+            sys.exit(1)
+    except OSError as e:
+        Logger.error(f"Cannot read meeting ID file: {e}")
+        sys.exit(1)
+
+
+def read_meeting_ids(file_path: Path) -> List[str]:
+    """
+    Read and parse meeting IDs from file, filtering out empty lines.
+    :param file_path: path to the meeting ID file
+    :returns: list of meeting IDs
+    :raises SystemExit: if file cannot be read
+    """
+    try:
+        with file_path.open("r") as file:
+            return [
+                line.strip()
+                for line in file.read().splitlines()
+                if line.strip()
+            ]
+    except OSError as e:
+        Logger.error(f"Failed to read meeting ID file: {e}")
+        sys.exit(1)
 
 
 def process_reports(meeting_id: str, n_days: int) -> bool:
@@ -47,8 +93,13 @@ def run() -> None:
     elif cli.args.all:
         Logger.info("Processing stored meeting IDs...")
         report_saved = False
-        with Config.meeting_id_file().open("r") as file:
-            meeting_ids = file.read().splitlines()
+        meeting_id_file = Config.meeting_id_file()
+        validate_meeting_id_file(meeting_id_file)
+        meeting_ids = read_meeting_ids(meeting_id_file)
+        if not meeting_ids:
+            Logger.error("No valid meeting IDs found in file")
+            sys.exit(1)
+        Logger.info(f"Processing {len(meeting_ids)} meeting ID(s)...")
         for meeting_id in meeting_ids:
             if process_reports(meeting_id, days):
                 report_saved = True
