@@ -2,7 +2,6 @@
 A wrapper for the Zoom API
 """
 from typing import Optional
-from urllib.parse import urljoin
 from http import HTTPStatus
 
 import requests
@@ -17,7 +16,7 @@ class Zoom:
     Use the requests library to talk to the Zoom API
     """
 
-    __base_url = "https://api.zoom.us/v2/."
+    __base_url = "https://api.zoom.us/v2"
 
     def __init__(self):
         self.token = request_token()
@@ -26,7 +25,7 @@ class Zoom:
     def __send_request(
         self, route: str, params: Optional[JSON] = None, timeout: int = 10
     ) -> requests.Response:
-        url = urljoin(self.__base_url, route)
+        url = f"{self.__base_url}/{route}"
         Logger.info(f"Sending request to {url}")
         headers = {"Authorization": f"Bearer {self.token}"}
         response = requests.get(url, headers=headers, params=params, timeout=timeout)
