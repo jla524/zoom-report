@@ -59,9 +59,6 @@ class Config(metaclass=ThreadSafeMeta):
 
     try:
         __env = __config["APP_ENV"]
-        __dropbox_key = __config["DROPBOX_KEY"]
-        __dropbox_secret = __config["DROPBOX_SECRET"]
-        __dropbox_token = __config["DROPBOX_TOKEN"]
         __ragic_api_key = __config["RAGIC_API_KEY"]
         __zoom_client_id = __config["ZOOM_CLIENT_ID"]
         __zoom_client_secret = __config["ZOOM_CLIENT_SECRET"]
@@ -104,27 +101,6 @@ class Config(metaclass=ThreadSafeMeta):
         Getter for config
         """
         return cls.__env
-
-    @classmethod
-    def dropbox_key(cls) -> Optional[str]:
-        """
-        Getter for Dropbox key
-        """
-        return cls.__dropbox_key
-
-    @classmethod
-    def dropbox_secret(cls) -> Optional[str]:
-        """
-        Getter for Dropbox secret
-        """
-        return cls.__dropbox_secret
-
-    @classmethod
-    def dropbox_token(cls) -> Optional[str]:
-        """
-        Getter for Dropbox token
-        """
-        return cls.__dropbox_token
 
     @classmethod
     def ragic_api_key(cls) -> Optional[str]:
