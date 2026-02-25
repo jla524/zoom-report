@@ -1,6 +1,7 @@
 """
 Retrieve Zoom attendance data
 """
+
 import pandas as pd
 
 from zoom_report import Config
@@ -24,7 +25,7 @@ def convert_to_frame(info: list[JSON]) -> pd.DataFrame:
             .dt.strftime(Config.datetime_format())
         )
     frame["user_email"] = frame["user_email"].fillna("")
-    frame.sort_values(["id", "name", "join_time"], inplace=True)
+    frame = frame.sort_values(["id", "name", "join_time"])
     return frame
 
 
@@ -42,7 +43,7 @@ def combine_rejoins(frame: pd.DataFrame) -> pd.DataFrame:
         .rename(columns={"duration": "total_duration"})
     )
     frame.columns = frame.columns.get_level_values(0)
-    frame.total_duration = round(frame.total_duration / 60, 2)
+    frame["total_duration"] = round(frame["total_duration"] / 60, 2)
     return frame
 
 
