@@ -74,14 +74,8 @@ def parse_response_json(
             Logger.warn(f"Empty JSON response from {context}")
             return default
         return data
-    except ValueError as e:
+    except (ValueError, TypeError, AttributeError) as e:
         Logger.error(f"Failed to parse JSON response from {context}: {e}")
-        return default
-    except Exception as e:
-        Logger.error(
-            f"Unexpected error parsing JSON from {context}: "
-            f"{type(e).__name__}: {e}"
-        )
         return default
 
 
