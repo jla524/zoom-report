@@ -13,7 +13,7 @@ from dotenv import dotenv_values, find_dotenv, set_key
 
 class ThreadSafeMeta(type):
     """
-    A thread-safe implementation of Singleton
+    A thread-safe implementation of Singleton using double-checked locking
     """
 
     _instances: dict = {}
@@ -24,10 +24,14 @@ class ThreadSafeMeta(type):
         Possible changes to the value of the `__init__` argument do not affect
           the returned instance
         """
-        with cls._lock:
-            if cls not in cls._instances:
-                instance = super().__call__(*args, **kwargs)
-                cls._instances[cls] = instance
+        # First check without lock (fast path)
+        if cls not in cls._instances:
+            # Acquire lock only when instance doesn't exist
+            with cls._lock:
+                # Double-check: another thread might have created it
+                if cls not in cls._instances:
+                    instance = super().__call__(*args, **kwargs)
+                    cls._instances[cls] = instance
         return cls._instances[cls]
 
 
