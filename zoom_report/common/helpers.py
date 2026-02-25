@@ -48,6 +48,28 @@ def with_retry(max_retries: int = 3, base_delay: float = 1.0):
     return decorator
 
 
+def parse_response_json(response: requests.Response, default: Optional[Any] = None, context: str = "API request") -> Any:
+    """
+    Safely parse JSON from an HTTP response with error handling.
+    :param response: requests Response object
+    :param default: default value to return if parsing fails (default: None)
+    :param context: description of the API operation for error messages
+    :returns: parsed JSON data or default value if parsing fails
+    """
+    try:
+        data = response.json()
+        if data is None or (isinstance(data, dict) and not data):
+            Logger.warn(f"Empty JSON response from {context}")
+            return default
+        return data
+    except ValueError as e:
+        Logger.error(f"Failed to parse JSON response from {context}: {e}")
+        return default
+    except Exception as e:
+        Logger.error(f"Unexpected error parsing JSON from {context}: {type(e).__name__}: {e}")
+        return default
+
+
 def encode_uuid(uuid: str) -> str:
     """
     Double encode a given UUID if it starts with / or contains //.

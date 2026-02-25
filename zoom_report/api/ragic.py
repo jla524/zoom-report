@@ -8,7 +8,7 @@ import requests
 
 from zoom_report import Config
 from zoom_report.common.enums import Cogv
-from zoom_report.common.helpers import JSON, with_retry
+from zoom_report.common.helpers import JSON, parse_response_json, with_retry
 from zoom_report.logger.pkg_logger import Logger
 
 REQUEST_TIMEOUT = 60
@@ -85,7 +85,8 @@ class Ragic:
             Cogv.START_TIME: attendance_info["start_time"],
             Cogv.MEETING_ID: attendance_info["meeting_id"],
         }
-        return self.__send_data(route, payload).json()
+        response = self.__send_data(route, payload)
+        return parse_response_json(response, default={}, context="write_attendance")
 
     def read_participants(self, uuid: str) -> JSON:
         """
@@ -95,7 +96,8 @@ class Ragic:
         """
         route = Config.ragic_participants_route()
         filters = [f"{Cogv.SUB_MEETING_NUMBER},eq,{uuid}"]
-        return self.__get_data(route, params={"where": filters}).json()
+        response = self.__get_data(route, params={"where": filters})
+        return parse_response_json(response, default={}, context="read_participants")
 
     def write_participant(self, uuid: str, participant_info: JSON) -> JSON:
         """
@@ -113,4 +115,5 @@ class Ragic:
             Cogv.LEAVE_TIME: participant_info["leave_time"],
             Cogv.TOTAL_DURATION: participant_info["total_duration"],
         }
-        return self.__send_data(route, payload).json()
+        response = self.__send_data(route, payload)
+        return parse_response_json(response, default={}, context="write_participant")

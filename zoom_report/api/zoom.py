@@ -7,7 +7,7 @@ from http import HTTPStatus
 
 import requests
 
-from zoom_report.common.helpers import JSON, with_retry
+from zoom_report.common.helpers import JSON, parse_response_json, with_retry
 from zoom_report.api.oauth import request_token
 from zoom_report.logger.pkg_logger import Logger
 
@@ -42,7 +42,8 @@ class Zoom:
         """
         Logger.info("Retrieving meeting instances...")
         route = f"past_meetings/{meeting_id}/instances"
-        return self.__send_request(route).json()
+        response = self.__send_request(route)
+        return parse_response_json(response, default={}, context="get_meeting_instances")
 
     def get_meeting_details(self, meeting_id: str) -> dict:
         """
@@ -52,7 +53,8 @@ class Zoom:
         """
         Logger.info("Retrieving meeting details...")
         route = f"meetings/{meeting_id}"
-        return self.__send_request(route).json()
+        response = self.__send_request(route)
+        return parse_response_json(response, default={}, context="get_meeting_details")
 
     def get_participants(self, meeting_uuid: str, next_page_token: Optional[str] = None) -> JSON:
         """
@@ -69,4 +71,4 @@ class Zoom:
         if response.status_code == HTTPStatus.NOT_FOUND:
             Logger.error("Unable to retrieve meeting {meeting_uuid}")
             return {}
-        return response.json()
+        return parse_response_json(response, default={}, context="get_participants")
