@@ -8,7 +8,7 @@ import requests
 
 from zoom_report import Config
 from zoom_report.common.enums import Cogv
-from zoom_report.common.helpers import JSON
+from zoom_report.common.helpers import JSON, with_retry
 from zoom_report.logger.pkg_logger import Logger
 
 REQUEST_TIMEOUT = 60
@@ -36,6 +36,7 @@ class Ragic:
                 return False
         return True
 
+    @with_retry(max_retries=3, base_delay=1.0)
     def __get_data(
         self, api_route: str, params: Optional[JSON] = None, timeout: int = REQUEST_TIMEOUT
     ) -> requests.Response:
@@ -52,6 +53,7 @@ class Ragic:
         response = requests.get(url, headers=self.__headers, params=params, timeout=timeout)
         return response
 
+    @with_retry(max_retries=3, base_delay=1.0)
     def __send_data(
         self, api_route: str, data: JSON, timeout: int = REQUEST_TIMEOUT
     ) -> requests.Response:

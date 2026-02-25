@@ -7,6 +7,7 @@ from http import HTTPStatus
 import requests
 
 from zoom_report import Config
+from zoom_report.common.helpers import with_retry
 from zoom_report.logger.pkg_logger import Logger
 
 
@@ -24,6 +25,7 @@ def encode(client_id, client_secret):
     return encoded
 
 
+@with_retry(max_retries=3, base_delay=1.0)
 def make_token_request(encoded: str, refresh_token: str, timeout: int) -> requests.Response:
     """
     Make the HTTP POST request to Zoom OAuth endpoint.

@@ -7,7 +7,7 @@ from http import HTTPStatus
 
 import requests
 
-from zoom_report.common.helpers import JSON
+from zoom_report.common.helpers import JSON, with_retry
 from zoom_report.api.oauth import request_token
 from zoom_report.logger.pkg_logger import Logger
 
@@ -22,6 +22,7 @@ class Zoom:
     def __init__(self):
         self.token = request_token()
 
+    @with_retry(max_retries=3, base_delay=1.0)
     def __send_request(
         self, route: str, params: Optional[JSON] = None, timeout: int = 10
     ) -> requests.Response:

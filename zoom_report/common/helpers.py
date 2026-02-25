@@ -1,13 +1,51 @@
 """
 Helper functions
 """
+import time
+from functools import wraps
 from typing import Any, Optional
 from urllib.parse import quote_plus
+
+import requests
 
 from zoom_report.logger.pkg_logger import Logger
 
 JSON = dict[str, Any]
 Instance = tuple[str, str]
+
+
+RETRYABLE_STATUSES = {429, 500, 502, 503, 504}
+RETRYABLE_EXCEPTIONS = (
+    requests.exceptions.ConnectionError,
+    requests.exceptions.Timeout,
+)
+
+
+def with_retry(max_retries: int = 3, base_delay: float = 1.0):
+    """
+    Decorator to add retry logic with exponential backoff.
+    Retries on HTTP 429, 500, 502, 503, 504 or connection/timeout errors.
+    """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_retries):
+                try:
+                    result = func(*args, **kwargs)
+                    if isinstance(result, requests.Response):
+                        if result.status_code in RETRYABLE_STATUSES:
+                            delay = base_delay * (2 ** attempt)
+                            Logger.warn(f"Request failed (status {result.status_code}), retrying in {delay}s (attempt {attempt + 1}/{max_retries})")
+                            time.sleep(delay)
+                            continue
+                    return result
+                except RETRYABLE_EXCEPTIONS as e:
+                    delay = base_delay * (2 ** attempt)
+                    Logger.warn(f"Request failed ({type(e).__name__}), retrying in {delay}s (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(delay)
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
 
 
 def encode_uuid(uuid: str) -> str:
