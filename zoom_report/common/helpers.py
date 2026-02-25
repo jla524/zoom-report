@@ -35,20 +35,32 @@ def with_retry(max_retries: int = 3, base_delay: float = 1.0):
                     if isinstance(result, requests.Response):
                         if result.status_code in RETRYABLE_STATUSES:
                             delay = base_delay * (2 ** attempt)
-                            Logger.warn(f"Request failed (status {result.status_code}), retrying in {delay}s (attempt {attempt + 1}/{max_retries})")
+                            Logger.warn(
+                                f"Request failed (status {result.status_code}), "
+                                f"retrying in {delay}s "
+                                f"(attempt {attempt + 1}/{max_retries})"
+                            )
                             time.sleep(delay)
                             continue
                     return result
                 except RETRYABLE_EXCEPTIONS as e:
                     delay = base_delay * (2 ** attempt)
-                    Logger.warn(f"Request failed ({type(e).__name__}), retrying in {delay}s (attempt {attempt + 1}/{max_retries})")
+                    Logger.warn(
+                        f"Request failed ({type(e).__name__}), "
+                        f"retrying in {delay}s "
+                        f"(attempt {attempt + 1}/{max_retries})"
+                    )
                     time.sleep(delay)
             return func(*args, **kwargs)
         return wrapper
     return decorator
 
 
-def parse_response_json(response: requests.Response, default: Optional[Any] = None, context: str = "API request") -> Any:
+def parse_response_json(
+    response: requests.Response,
+    default: Optional[Any] = None,
+    context: str = "API request"
+) -> Any:
     """
     Safely parse JSON from an HTTP response with error handling.
     :param response: requests Response object
@@ -66,7 +78,10 @@ def parse_response_json(response: requests.Response, default: Optional[Any] = No
         Logger.error(f"Failed to parse JSON response from {context}: {e}")
         return default
     except Exception as e:
-        Logger.error(f"Unexpected error parsing JSON from {context}: {type(e).__name__}: {e}")
+        Logger.error(
+            f"Unexpected error parsing JSON from {context}: "
+            f"{type(e).__name__}: {e}"
+        )
         return default
 
 
