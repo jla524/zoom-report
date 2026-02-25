@@ -6,6 +6,7 @@ from functools import wraps
 from typing import Any, Optional
 from urllib.parse import quote_plus
 
+import pandas as pd
 import requests
 
 from zoom_report.logger.pkg_logger import Logger
@@ -77,6 +78,43 @@ def parse_response_json(
     except (ValueError, TypeError, AttributeError) as e:
         Logger.error(f"Failed to parse JSON response from {context}: {e}")
         return default
+
+
+def safe_convert_datetime(
+    frame: pd.DataFrame,
+    columns: list[str],
+    timezone: str,
+    datetime_format: str
+) -> pd.DataFrame:
+    """
+    Safely convert datetime columns in a DataFrame with timezone conversion.
+    Continues with remaining columns if one fails. Returns a new DataFrame.
+    On conversion failure, keeps the original value.
+    :param frame: pandas DataFrame to process
+    :param columns: list of column names to convert
+    :param timezone: target timezone for conversion
+    :param datetime_format: output datetime format string
+    :returns: new DataFrame with converted datetime columns
+    """
+    if frame.empty:
+        return frame.copy()
+    result = frame.copy()
+    for column in columns:
+        if column not in result.columns:
+            Logger.warn(f"Column '{column}' not found in DataFrame")
+            continue
+        try:
+            result[column] = (
+                pd.to_datetime(result[column])
+                .dt.tz_convert(timezone)
+                .dt.strftime(datetime_format)
+            )
+        except Exception as e:
+            Logger.error(
+                f"Failed to convert column '{column}' to datetime: "
+                f"{type(e).__name__}: {e}. Keeping original values."
+            )
+    return result
 
 
 def encode_uuid(uuid: str) -> str:

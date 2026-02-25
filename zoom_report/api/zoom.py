@@ -30,7 +30,7 @@ class Zoom:
         headers = {"Authorization": f"Bearer {self.token}"}
         response = requests.get(url, headers=headers, params=params, timeout=timeout)
         if response.status_code != HTTPStatus.OK:
-            Logger.warn("An error has occured when sending request.")
+            Logger.warn("An error has occurred when sending request.")
         return response
 
     def get_meeting_instances(self, meeting_id: str) -> dict:

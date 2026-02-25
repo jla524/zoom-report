@@ -6,7 +6,7 @@ import pandas as pd
 
 from zoom_report import Config
 from zoom_report.logger.pkg_logger import Logger
-from zoom_report.common.helpers import JSON, encode_uuid
+from zoom_report.common.helpers import JSON, encode_uuid, safe_convert_datetime
 from zoom_report.process.meetings import get_info
 
 
@@ -18,12 +18,12 @@ def convert_to_frame(info: list[JSON]) -> pd.DataFrame:
     """
     Logger.info("Converting attendance info to DataFrame...")
     frame = pd.DataFrame(info)
-    for column in ["join_time", "leave_time"]:
-        frame[column] = (
-            pd.to_datetime(frame[column])
-            .dt.tz_convert(Config.timezone())
-            .dt.strftime(Config.datetime_format())
-        )
+    frame = safe_convert_datetime(
+        frame,
+        columns=["join_time", "leave_time"],
+        timezone=Config.timezone(),
+        datetime_format=Config.datetime_format()
+    )
     frame["user_email"] = frame["user_email"].fillna("")
     frame = frame.sort_values(["id", "name", "join_time"])
     return frame

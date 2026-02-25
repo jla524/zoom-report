@@ -88,7 +88,7 @@ def get_details(meeting_id: str) -> JSON:
     """
     response = Zoom().get_meeting_details(meeting_id)
     if "code" in response:
-        Logger.warn("An error occured when retrieving meeting details.")
+        Logger.warn("An error occurred when retrieving meeting details.")
         Logger.error(response.get("message", "Unknown error."))
         return {}
     return response

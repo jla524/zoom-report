@@ -21,7 +21,7 @@ class Cli(metaclass=ThreadSafeMeta):
         self.__parser.add_argument("-a", "--all", action="store_true")
         self.__parser.add_argument("-r", "--recent", action="store_true")
         self.__parser.add_argument("-b", "--backfill", action="store_true")
-        self.__parser.add_argument("-m", "--meeting", type=int)
+        self.__parser.add_argument("-m", "--meeting", type=str)
         self.__args = self.__parser.parse_args()
 
     @property
