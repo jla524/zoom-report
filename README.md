@@ -24,16 +24,13 @@ Automate Zoom attendance reports with Python.
 
 [Using Zoom APIs][4]
 
-[Upload file to Dropbox][5]
+[Ragic HTTP API Integration Guide][5]
 
-[Ragic HTTP API Integration Guide][6]
-
-[Blazing fast CI with GitHub Actions, Poetry, Black and Pytest][7]
+[Blazing fast CI with GitHub Actions, Poetry, Black and Pytest][6]
 
 [1]: https://python-poetry.org/docs/#installation
 [2]: https://github.com/mattcoding4days/kickstart
 [3]: https://medium.com/swlh/how-i-automate-my-church-organisations-zoom-meeting-attendance-reporting-with-python-419dfe7da58c
 [4]: https://marketplace.zoom.us/docs/api-reference/using-zoom-apis
-[5]: https://stackoverflow.com/questions/23894221/upload-file-to-my-dropbox-from-python-script
-[6]: https://www.ragic.com/intl/en/doc-api
-[7]: https://medium.com/@vanflymen/blazing-fast-ci-with-github-actions-poetry-black-and-pytest-9e74299dd4a5
+[5]: https://www.ragic.com/intl/en/doc-api
+[6]: https://medium.com/@vanflymen/blazing-fast-ci-with-github-actions-poetry-black-and-pytest-9e74299dd4a5
