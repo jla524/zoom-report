@@ -67,9 +67,9 @@ def parse_token_response(response: requests.Response) -> dict:
     """
     try:
         data = response.json()
-    except ValueError as e:
-        Logger.error(f"Invalid JSON response from OAuth: {e}")
-        raise ValueError("Invalid OAuth response: not valid JSON") from e
+    except ValueError as error:
+        Logger.error(f"Invalid JSON response from OAuth: {error}")
+        raise ValueError("Invalid OAuth response: not valid JSON") from error
     if "access_token" not in data:
         Logger.error("OAuth response missing access_token")
         raise ValueError("Invalid OAuth response: missing access_token")
@@ -97,8 +97,8 @@ def request_token(timeout: int = 10) -> str:
         raise ValueError("Missing refresh token")
     try:
         response = make_token_request(encoded, refresh_token, timeout)
-    except requests.exceptions.RequestException as e:
-        Logger.error(f"Network error during OAuth token request: {e}")
+    except requests.exceptions.RequestException as error:
+        Logger.error(f"Network error during OAuth token request: {error}")
         raise
     handle_http_error(response)
     data = parse_token_response(response)

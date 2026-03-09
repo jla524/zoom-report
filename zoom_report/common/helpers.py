@@ -44,10 +44,10 @@ def with_retry(max_retries: int = 3, base_delay: float = 1.0):
                             time.sleep(delay)
                             continue
                     return result
-                except RETRYABLE_EXCEPTIONS as e:
+                except RETRYABLE_EXCEPTIONS as error:
                     delay = base_delay * (2 ** attempt)
                     Logger.warn(
-                        f"Request failed ({type(e).__name__}), "
+                        f"Request failed ({type(error).__name__}), "
                         f"retrying in {delay}s "
                         f"(attempt {attempt + 1}/{max_retries})"
                     )
@@ -75,8 +75,8 @@ def parse_response_json(
             Logger.warn(f"Empty JSON response from {context}")
             return default
         return data
-    except (ValueError, TypeError, AttributeError) as e:
-        Logger.error(f"Failed to parse JSON response from {context}: {e}")
+    except (ValueError, TypeError, AttributeError) as error:
+        Logger.error(f"Failed to parse JSON response from {context}: {error}")
         return default
 
 
@@ -109,10 +109,10 @@ def safe_convert_datetime(
                 .dt.tz_convert(timezone)
                 .dt.strftime(datetime_format)
             )
-        except Exception as e:
+        except (ValueError, TypeError) as error:
             Logger.error(
                 f"Failed to convert column '{column}' to datetime: "
-                f"{type(e).__name__}: {e}. Keeping original values."
+                f"{type(error).__name__}: {error}. Keeping original values."
             )
     return result
 

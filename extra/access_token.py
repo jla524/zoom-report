@@ -65,8 +65,8 @@ def main():
         else:
             Logger.error(f"Failed to get access token: {data}")
             sys.exit(1)
-    except Exception as e:
-        Logger.error(f"Failed to get access token: {type(e).__name__}: {e}")
+    except Exception as error:
+        Logger.error(f"Failed to get access token: {type(error).__name__}: {error}")
         sys.exit(1)
 
 

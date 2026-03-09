@@ -33,8 +33,8 @@ def validate_meeting_id_file(file_path: Path) -> None:
         if file_size == 0:
             Logger.error("Meeting ID file is empty")
             sys.exit(1)
-    except OSError as e:
-        Logger.error(f"Cannot read meeting ID file: {e}")
+    except OSError as error:
+        Logger.error(f"Cannot read meeting ID file: {error}")
         sys.exit(1)
 
 
@@ -52,8 +52,8 @@ def read_meeting_ids(file_path: Path) -> List[str]:
                 for line in file.read().splitlines()
                 if line.strip()
             ]
-    except OSError as e:
-        Logger.error(f"Failed to read meeting ID file: {e}")
+    except OSError as error:
+        Logger.error(f"Failed to read meeting ID file: {error}")
         sys.exit(1)
 
 
