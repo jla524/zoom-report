@@ -12,6 +12,8 @@ export PATH="$HOME/.local/bin:$PATH"
 # Set up variables for retry logic
 max_attempts=5
 attempt_num=1
+base_delay=30
+max_delay=300
 
 # Run the attendance script via poetry
 until [[ $attempt_num -gt $max_attempts ]]; do
@@ -19,8 +21,10 @@ until [[ $attempt_num -gt $max_attempts ]]; do
     echo "Command succeeded on attempt $attempt_num."
     break
   else
-    echo "Attempt $attempt_num failed. Trying again in 30 seconds..."
-    sleep 30
+    delay=$((base_delay * 2 ** (attempt_num - 1)))
+    [[ $delay -gt $max_delay ]] && delay=$max_delay
+    echo "Attempt $attempt_num failed. Trying again in $delay seconds..."
+    sleep $delay
     ((attempt_num++))
   fi
 done
